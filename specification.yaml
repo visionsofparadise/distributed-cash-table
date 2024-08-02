@@ -276,8 +276,6 @@ components:
         version:
           type: integer
           minimum: 1
-        nodeKey:
-          $ref: '#/components/schemas/Key'
         url:
           type: string
           format: uri
@@ -289,7 +287,6 @@ components:
           $ref: '#/components/schemas/Signature'
       required:
         - version
-        - nodeKey
         - url
         - rangeBits
         - proofOfWork
