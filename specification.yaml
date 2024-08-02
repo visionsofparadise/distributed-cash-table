@@ -34,12 +34,12 @@ paths:
         in: query
         required: true
         schema:
-          $ref: '#/components/schemas/key'
+          $ref: '#/components/schemas/Key'
       - name: rangeBits
         in: query
         required: true
         schema:
-          $ref: '#/components/schemas/rangeBits'
+          $ref: '#/components/schemas/RangeBits'
       responses:
         '200':
           description: Success
@@ -95,7 +95,7 @@ paths:
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/key'
+          $ref: '#/components/schemas/Key'
       responses:
         '200':
           description: Success
@@ -125,7 +125,7 @@ paths:
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/key'
+          $ref: '#/components/schemas/Key'
       responses:
         '200':
           description: Success
@@ -154,7 +154,7 @@ paths:
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/key'
+          $ref: '#/components/schemas/Key'
       responses:
         '200':
           description: Success
@@ -197,35 +197,6 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
-    # values
-    hash:
-      description: Represents a md5 checksum.
-      type: string
-      pattern: ^[a-f0-9]+$
-      minLength: 32
-      maxLength: 32
-    key:
-      description: Represents a key in the distributed hash table. When referred to
-        as 'nodeKey' this represents hash160(publicKey) of a node's identity. When
-        referred to as 'coinKey' this represents hash160(nodeKey + nonce) of a proof
-        of work.
-      type: string
-      pattern: ^[a-f0-9]+$
-      minLength: 40
-      maxLength: 40
-    rangeBits:
-      description: Represents a bitwise distance.
-      type: integer
-      format: int32
-      minimum: 0
-      maximum: 160
-    signature:
-      description: A signature produced from a node identity private key.
-      type: string
-      pattern: ^[a-f0-9]+$
-      minLength: 144
-      maxLength: 144
-    # models
     Coin:
       description: Represents a value in the distributed hash table. A coin tracks
         valid transaction chains and commits from other nodes. A node will use commits
@@ -233,7 +204,7 @@ components:
       type: object
       properties:
         coinKey:
-          $ref: '#/components/schemas/key'
+          $ref: '#/components/schemas/Key'
         transactionMaps:
           type: array
           items:
@@ -258,7 +229,7 @@ components:
       type: object
       properties:
         targetHash:
-          $ref: '#/components/schemas/hash'
+          $ref: '#/components/schemas/Hash'
         sequenceNumber:
           type: integer
           format: int32
@@ -267,7 +238,7 @@ components:
         proofOfWork:
           $ref: '#/components/schemas/ProofOfWork'
         signature:
-          $ref: '#/components/schemas/signature'
+          $ref: '#/components/schemas/Signature'
       required:
         - targetHash
         - sequenceNumber
@@ -283,6 +254,21 @@ components:
       required:
         - code
         - message
+    Hash:
+      description: Represents a md5 checksum.
+      type: string
+      pattern: ^[a-f0-9]+$
+      minLength: 32
+      maxLength: 32
+    Key:
+      description: Represents a key in the distributed hash table. When referred to
+        as 'nodeKey' this represents hash160(publicKey) of a node's identity. When
+        referred to as 'coinKey' this represents hash160(nodeKey + nonce) of a proof
+        of work.
+      type: string
+      pattern: ^[a-f0-9]+$
+      minLength: 40
+      maxLength: 40
     Node:
       description: Represents information about a node.
       type: object
@@ -291,16 +277,16 @@ components:
           type: integer
           minimum: 1
         nodeKey:
-          $ref: '#/components/schemas/key'
+          $ref: '#/components/schemas/Key'
         url:
           type: string
           format: uri
         rangeBits:
-          $ref: '#/components/schemas/rangeBits'
+          $ref: '#/components/schemas/RangeBits'
         proofOfWork:
           $ref: '#/components/schemas/ProofOfWork'
         signature:
-          $ref: '#/components/schemas/signature'
+          $ref: '#/components/schemas/Signature'
       required:
         - version
         - nodeKey
@@ -314,7 +300,7 @@ components:
       type: object
       properties:
         nodeKey:
-          $ref: '#/components/schemas/key'
+          $ref: '#/components/schemas/Key'
         nonce:
           type: string
           pattern: ^[a-f0-9]+$
@@ -323,6 +309,12 @@ components:
       required:
         - nodeKey
         - nonce
+    RangeBits:
+      description: Represents a bitwise distance.
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 160
     Root:
       description: Represents the mining of a new coin and ownership being assigned
         to the proofOfWork nodeKey.
@@ -331,10 +323,16 @@ components:
         proofOfWork:
           $ref: '#/components/schemas/ProofOfWork'
         signature:
-          $ref: '#/components/schemas/signature'
+          $ref: '#/components/schemas/Signature'
       required:
         - proofOfWork
         - signature
+    Signature:
+      description: A signature produced from a node identity private key.
+      type: string
+      pattern: ^[a-f0-9]+$
+      minLength: 140
+      maxLength: 144
     Transfer:
       description: Represents a node from a previous transaction assigning ownership
         to a new nodeKey.
@@ -346,11 +344,11 @@ components:
           minimum: 1
           maximum: 199
         previousHash:
-          $ref: '#/components/schemas/hash'
+          $ref: '#/components/schemas/Hash'
         nodeKey:
-          $ref: '#/components/schemas/key'
+          $ref: '#/components/schemas/Key'
         signature:
-          $ref: '#/components/schemas/signature'
+          $ref: '#/components/schemas/Signature'
       required:
         - index
         - previousHash
