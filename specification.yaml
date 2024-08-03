@@ -4,7 +4,7 @@ info:
   description: API specification for nodes in the CoinLoop network.
   version: 1.0.0
 paths:
-  /v1/:
+  /v1:
     description: Resource for handling the recipient node.
     get:
       operationId: ping
