@@ -302,23 +302,18 @@
                   "coinKey": {
                       "$ref": "#/components/schemas/Key"
                   },
-                  "transactionMaps": {
-                      "type": "array",
-                      "items": {
-                          "type": "object",
-                          "additionalProperties": {
-                              "oneOf": [
-                                  {
-                                      "$ref": "#/components/schemas/Root"
-                                  },
-                                  {
-                                      "$ref": "#/components/schemas/Transfer"
-                                  }
-                              ]
-                          }
-                      },
-                      "minItems": 0,
-                      "maxItems": 199
+                  "transactionMap": {
+                      "type": "object",
+                      "additionalProperties": {
+                          "oneOf": [
+                              {
+                                  "$ref": "#/components/schemas/Root"
+                              },
+                              {
+                                  "$ref": "#/components/schemas/Transfer"
+                              }
+                          ]
+                      }
                   },
                   "commitMap": {
                       "type": "object",
