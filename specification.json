@@ -324,7 +324,7 @@
               },
               "required": [
                   "coinKey",
-                  "transactionMaps",
+                  "transactionMap",
                   "commitMap"
               ]
           },
