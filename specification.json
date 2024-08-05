@@ -54,6 +54,22 @@
                       "schema": {
                           "$ref": "#/components/schemas/RangeBits"
                       }
+                  },
+                  {
+                      "name": "cursorKey",
+                      "in": "query",
+                      "required": false,
+                      "schema": {
+                        "$ref": "#/components/schemas/Key"
+                      }
+                  },
+                  {
+                    "name": "pageSizeBytes",
+                    "in": "query",
+                    "required": false,
+                    "schema": {
+                        "$ref": "#/components/schemas/UInt32"
+                    }
                   }
               ],
               "responses": {
@@ -222,6 +238,22 @@
                       "schema": {
                           "$ref": "#/components/schemas/Key"
                       }
+                  },
+                  {
+                    "name": "cursorKey",
+                    "in": "query",
+                    "required": false,
+                    "schema": {
+                        "$ref": "#/components/schemas/Key"
+                    }
+                  },
+                  {
+                    "name": "pageSizeBytes",
+                    "in": "query",
+                    "required": false,
+                    "schema": {
+                        "$ref": "#/components/schemas/PageSizeBytes"
+                    }
                   }
               ],
               "responses": {
@@ -336,10 +368,7 @@
                       "$ref": "#/components/schemas/Hash"
                   },
                   "sequenceNumber": {
-                      "type": "integer",
-                      "format": "int32",
-                      "minimum": 0,
-                      "maximum": 4294967295
+                      "$ref": "#/components/schemas/UInt32"
                   },
                   "proofOfWork": {
                       "$ref": "#/components/schemas/ProofOfWork"
@@ -377,6 +406,13 @@
               "minLength": 32,
               "maxLength": 32
           },
+          "UInt32": {
+              "description": "An unsigned integer.",
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0,
+              "maximum": 4294967295
+          },
           "Key": {
               "description": "Represents a key in the distributed hash table. When referred to as 'nodeKey' this represents hash160(publicKey) of a node's identity. When referred to as 'coinKey' this represents hash160(nodeKey + nonce) of a proof of work.",
               "type": "string",
@@ -399,6 +435,9 @@
                   "rangeBits": {
                       "$ref": "#/components/schemas/RangeBits"
                   },
+                  "pageSizeBytes": {
+                      "$ref": "#/components/schemas/PageSizeBytes"
+                  },
                   "proofOfWork": {
                       "$ref": "#/components/schemas/ProofOfWork"
                   },
@@ -413,6 +452,13 @@
                   "proofOfWork",
                   "signature"
               ]
+          },
+          "PageSizeBytes": {
+            "description": "Size in bytes of pages sent from queries.",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1024,
+            "maximum": 4294967295
           },
           "ProofOfWork": {
               "description": "Represents proof of work by a given nodeKey. A proof of work score is given by the bitwise distance of hash160(nodeKey + nonce) and the nodeKey.",
