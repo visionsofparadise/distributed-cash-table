@@ -32,114 +32,6 @@
               }
           }
       },
-      "/v1/coins": {
-          "description": "Resource for handling coins.",
-          "get": {
-              "operationId": "listCoins",
-              "summary": "Lists all coins within the queried rangeBits around a coinKey.",
-              "description": "The recipient node will return all coins within a give bitwise XOR distance around a given coinKey.",
-              "parameters": [
-                  {
-                      "name": "coinKey",
-                      "in": "query",
-                      "required": true,
-                      "schema": {
-                          "$ref": "#/components/schemas/Key"
-                      }
-                  },
-                  {
-                      "name": "rangeBits",
-                      "in": "query",
-                      "required": true,
-                      "schema": {
-                          "$ref": "#/components/schemas/RangeBits"
-                      }
-                  },
-                  {
-                      "name": "cursorKey",
-                      "in": "query",
-                      "required": false,
-                      "schema": {
-                        "$ref": "#/components/schemas/Key"
-                      }
-                  },
-                  {
-                    "name": "pageSizeBytes",
-                    "in": "query",
-                    "required": false,
-                    "schema": {
-                        "$ref": "#/components/schemas/UInt32"
-                    }
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Success",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "type": "array",
-                                  "items": {
-                                      "$ref": "#/components/schemas/Coin"
-                                  }
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "$ref": "#/components/responses/BadRequest"
-                  },
-                  "401": {
-                      "$ref": "#/components/responses/Unauthorized"
-                  },
-                  "5XX": {
-                      "$ref": "#/components/responses/InternalError"
-                  }
-              }
-          },
-          "patch": {
-              "operationId": "patchCoins",
-              "summary": "Creates or updates the provided coins.",
-              "description": "The recipient node will create new coins if not found and merge with existings coins if they do. The recipient node will return all updated coins.",
-              "requestBody": {
-                  "required": true,
-                  "content": {
-                      "application/json": {
-                          "schema": {
-                              "type": "array",
-                              "items": {
-                                  "$ref": "#/components/schemas/Coin"
-                              }
-                          }
-                      }
-                  }
-              },
-              "responses": {
-                  "200": {
-                      "description": "Success",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "type": "array",
-                                  "items": {
-                                      "$ref": "#/components/schemas/Coin"
-                                  }
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "$ref": "#/components/responses/BadRequest"
-                  },
-                  "401": {
-                      "$ref": "#/components/responses/Unauthorized"
-                  },
-                  "5XX": {
-                      "$ref": "#/components/responses/InternalError"
-                  }
-              }
-          }
-      },
       "/v1/coins/{coinKey}": {
           "description": "Resource for handling a coin identified by it's coinKey",
           "get": {
@@ -156,6 +48,55 @@
                       }
                   }
               ],
+              "responses": {
+                  "200": {
+                      "description": "Success",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/Coin"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "$ref": "#/components/responses/BadRequest"
+                  },
+                  "401": {
+                      "$ref": "#/components/responses/Unauthorized"
+                  },
+                  "404": {
+                      "$ref": "#/components/responses/NotFound"
+                  },
+                  "5XX": {
+                      "$ref": "#/components/responses/InternalError"
+                  }
+              }
+          },
+          "patch": {
+              "operationId": "patchCoin",
+              "summary": "Creates or updates a coin.",
+              "description": "The recipient node will create a new coin if not found and merge if they do. The recipient node will return the updated coin.",
+              "parameters": [
+                  {
+                      "name": "coinKey",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                          "$ref": "#/components/schemas/Key"
+                      }
+                  }
+              ],
+              "requestBody": {
+                  "required": true,
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/Coin"
+                          }
+                      }
+                  }
+              },
               "responses": {
                   "200": {
                       "description": "Success",
@@ -207,64 +148,6 @@
                                   "type": "array",
                                   "items": {
                                       "$ref": "#/components/schemas/Node"
-                                  }
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "$ref": "#/components/responses/BadRequest"
-                  },
-                  "401": {
-                      "$ref": "#/components/responses/Unauthorized"
-                  },
-                  "5XX": {
-                      "$ref": "#/components/responses/InternalError"
-                  }
-              }
-          }
-      },
-      "/v1/nodes/{nodeKey}/coins": {
-          "description": "Resource for handling a node's coins",
-          "get": {
-              "operationId": "listNodeCoins",
-              "summary": "Lists all coins that are assigned to a node.",
-              "description": "The recipient node will return all coins assigned to a nodeKey. A coin is assigned to a node when it's latest consensus transaction points to it's nodeKey.",
-              "parameters": [
-                  {
-                      "name": "nodeKey",
-                      "in": "path",
-                      "required": true,
-                      "schema": {
-                          "$ref": "#/components/schemas/Key"
-                      }
-                  },
-                  {
-                    "name": "cursorKey",
-                    "in": "query",
-                    "required": false,
-                    "schema": {
-                        "$ref": "#/components/schemas/Key"
-                    }
-                  },
-                  {
-                    "name": "pageSizeBytes",
-                    "in": "query",
-                    "required": false,
-                    "schema": {
-                        "$ref": "#/components/schemas/PageSizeBytes"
-                    }
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Success",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "type": "array",
-                                  "items": {
-                                      "$ref": "#/components/schemas/Coin"
                                   }
                               }
                           }
@@ -334,30 +217,30 @@
                   "coinKey": {
                       "$ref": "#/components/schemas/Key"
                   },
-                  "transactionMap": {
-                      "type": "object",
-                      "additionalProperties": {
-                          "oneOf": [
-                              {
-                                  "$ref": "#/components/schemas/Root"
-                              },
-                              {
-                                  "$ref": "#/components/schemas/Transfer"
-                              }
-                          ]
-                      }
+                  "roots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Root"
+                    }
                   },
-                  "commitMap": {
-                      "type": "object",
-                      "additionalProperties": {
-                          "$ref": "#/components/schemas/Commit"
-                      }
+                  "transfers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Transfer"
+                    }
+                  },
+                  "commits": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Commit"
+                    }
                   }
               },
               "required": [
                   "coinKey",
-                  "transactionMap",
-                  "commitMap"
+                  "roots",
+                  "transfers",
+                  "commits"
               ]
           },
           "Commit": {
@@ -400,11 +283,11 @@
               ]
           },
           "Hash": {
-              "description": "Represents a md5 checksum.",
+              "description": "Represents a md5 checksum. Encoded as base64.",
               "type": "string",
-              "pattern": "^[a-f0-9]+$",
-              "minLength": 32,
-              "maxLength": 32
+              "pattern": "^[-A-Za-z0-9+/]*={0,3}$",
+              "minLength": 24,
+              "maxLength": 24
           },
           "UInt32": {
               "description": "An unsigned integer.",
@@ -414,11 +297,11 @@
               "maximum": 4294967295
           },
           "Key": {
-              "description": "Represents a key in the distributed hash table. When referred to as 'nodeKey' this represents hash160(publicKey) of a node's identity. When referred to as 'coinKey' this represents hash160(nodeKey + nonce) of a proof of work.",
+              "description": "Represents a key in the distributed hash table. When referred to as 'nodeKey' this represents hash160(publicKey) of a node's identity. When referred to as 'coinKey' this represents hash160(nodeKey + nonce) of a proof of work. Encoded as base64.",
               "type": "string",
-              "pattern": "^[a-f0-9]+$",
-              "minLength": 40,
-              "maxLength": 40
+              "pattern": "^[-A-Za-z0-9+/]*={0,3}$",
+              "minLength": 28,
+              "maxLength": 28
           },
           "Node": {
               "description": "Represents information about a node.",
@@ -428,15 +311,18 @@
                       "type": "integer",
                       "minimum": 1
                   },
-                  "url": {
+                  "ip": {
                       "type": "string",
-                      "format": "uri"
+                      "minLength": 11,
+                      "maxLength": 15
+                  },
+                  "port": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 65535
                   },
                   "rangeBits": {
                       "$ref": "#/components/schemas/RangeBits"
-                  },
-                  "pageSizeBytes": {
-                      "$ref": "#/components/schemas/PageSizeBytes"
                   },
                   "proofOfWork": {
                       "$ref": "#/components/schemas/ProofOfWork"
@@ -454,13 +340,6 @@
                   "signature"
               ]
           },
-          "PageSizeBytes": {
-            "description": "Size in bytes of pages sent from queries.",
-            "type": "integer",
-            "format": "int32",
-            "minimum": 1024,
-            "maximum": 4294967295
-          },
           "ProofOfWork": {
               "description": "Represents proof of work by a given nodeKey. A proof of work score is given by the bitwise distance of hash160(nodeKey + nonce) and the nodeKey.",
               "type": "object",
@@ -470,9 +349,9 @@
                   },
                   "nonce": {
                       "type": "string",
-                      "pattern": "^[a-f0-9]+$",
-                      "minLength": 64,
-                      "maxLength": 64
+                      "pattern": "^[-A-Za-z0-9+/]*={0,3}$",
+                      "minLength": 44,
+                      "maxLength": 44
                   }
               },
               "required": [
@@ -504,11 +383,11 @@
               ]
           },
           "Signature": {
-              "description": "A signature produced from a node identity private key.",
+              "description": "A signature produced from a node identity private key. Encoded as base64.",
               "type": "string",
-              "pattern": "^[a-f0-9]+$",
-              "minLength": 140,
-              "maxLength": 144
+              "pattern": "^[-A-Za-z0-9+/]*={0,3}$",
+              "minLength": 96,
+              "maxLength": 96
           },
           "Transfer": {
               "description": "Represents a node from a previous transaction assigning ownership to a new nodeKey.",
@@ -518,7 +397,7 @@
                       "type": "integer",
                       "format": "int32",
                       "minimum": 1,
-                      "maximum": 199
+                      "maximum": 255
                   },
                   "previousHash": {
                       "$ref": "#/components/schemas/Hash"
