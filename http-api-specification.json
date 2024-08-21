@@ -297,7 +297,7 @@
               "maximum": 4294967295
           },
           "Key": {
-              "description": "Represents a key in the distributed hash table. When referred to as 'nodeKey' this represents hash160(publicKey) of a node's identity. When referred to as 'coinKey' this represents hash160(nodeKey + nonce) of a proof of work. Encoded as base64.",
+              "description": "Represents a key in the distributed hash table. When referred to as 'nodeKey' this represents hash160(publicKey) of a node's identity. When referred to as 'coinKey' this represents hash160(nodeKey + bytes) of a proof of work. Encoded as base64.",
               "type": "string",
               "pattern": "^[-A-Za-z0-9+/]*={0,3}$",
               "minLength": 28,
@@ -341,13 +341,13 @@
               ]
           },
           "ProofOfWork": {
-              "description": "Represents proof of work by a given nodeKey. A proof of work score is given by the bitwise distance of hash160(nodeKey + nonce) and the nodeKey.",
+              "description": "Represents proof of work by a given nodeKey. A proof of work score is given by the bitwise distance of hash160(nodeKey + bytes) and the nodeKey.",
               "type": "object",
               "properties": {
                   "nodeKey": {
                       "$ref": "#/components/schemas/Key"
                   },
-                  "nonce": {
+                  "bytes": {
                       "type": "string",
                       "pattern": "^[-A-Za-z0-9+/]*={0,3}$",
                       "minLength": 44,
@@ -356,7 +356,7 @@
               },
               "required": [
                   "nodeKey",
-                  "nonce"
+                  "bytes"
               ]
           },
           "RangeBits": {
