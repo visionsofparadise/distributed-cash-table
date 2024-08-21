@@ -333,7 +333,8 @@
               },
               "required": [
                   "version",
-                  "url",
+                  "ip",
+                  "port",
                   "rangeBits",
                   "pageSizeBytes",
                   "proofOfWork",
