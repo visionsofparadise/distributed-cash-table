@@ -32,6 +32,98 @@
                 }
             }
         },
+        "/v1/nodes/{nodeKey}": {
+            "description": "Resource for handling a node identified by it's nodeKey.",
+            "get": {
+                "operationId": "getNode",
+                "summary": "Lists the closest nodes to the requested nodeKey.",
+                "description": "The recipient node will return the closest nodes it has stored to the nodeKey. Clients should recursively use this method to find a target node. It is up to clients to measure nodeKey distances to make progress towards a target node.",
+                "parameters": [
+                    {
+                        "name": "nodeKey",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Key"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Node"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "5XX": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                }
+            }
+        },
+        "/v1/nodes/{nodeKey}/coins": {
+            "description": "Resource for exporting all coinKeys currently held by a node.",
+            "get": {
+                "operationId": "listNodeCoins",
+                "summary": "Lists all coinKeys current held by a node.",
+                "description": "Returns a list of coinKeys that are currently held by a node. This operation is primarily used for exporting coinKeys mined by the node itself, for use in a wallet application, and is protected by a secret key. This operation does not return all coinKeys held by on a node on the entire network.",
+                "parameters": [
+                    {
+                        "name": "secretKey",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/SecretKey"
+                        }
+                    },
+                    {
+                        "name": "nodeKey",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Key"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Key"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "5XX": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                }
+            }
+        },
         "/v1/coins/{coinKey}": {
             "description": "Resource for handling a coin identified by it's coinKey",
             "get": {
@@ -116,48 +208,6 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/NotFound"
-                    },
-                    "5XX": {
-                        "$ref": "#/components/responses/InternalError"
-                    }
-                }
-            }
-        },
-        "/v1/nodes/{nodeKey}": {
-            "description": "Resource for handling a node identified by it's nodeKey.",
-            "get": {
-                "operationId": "getNode",
-                "summary": "Lists the closest nodes to the requested nodeKey.",
-                "description": "The recipient node will return the closest nodes it has stored to the nodeKey. Clients should recursively use this method to find a target node. It is up to clients to measure nodeKey distances to make progress towards a target node.",
-                "parameters": [
-                    {
-                        "name": "nodeKey",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/Key"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Node"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
                     },
                     "5XX": {
                         "$ref": "#/components/responses/InternalError"
@@ -291,8 +341,7 @@
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
                 "minLength": 43,
-                "maxLength": 43,
-                "format": ""
+                "maxLength": 43
             },
             "Key": {
                 "description": "Represents a key in the distributed hash table. When referred to as 'nodeKey' this represents ripemd(sha256(publicKey)) of a node's identity. When referred to as 'coinKey' this represents ripemd(sha256(nodeKey + bytes)) of a proof of work. Encoded as base64url.",
@@ -377,6 +426,13 @@
                     "proofOfWork",
                     "signature"
                 ]
+            },
+            "SecretKey": {
+                "description": "Represents a 32 byte secret key. Encoded as base64url.",
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "minLength": 43,
+                "maxLength": 43
             },
             "Signature": {
                 "description": "A signature produced from a node identity private key. Encoded as base64.",
