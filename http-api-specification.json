@@ -82,7 +82,7 @@
                 "description": "Returns a list of coinKeys that are currently held by a node. This operation is primarily used for exporting coinKeys mined by the node itself, for use in a wallet application, and is protected by a secret key. This operation does not return all coinKeys held by on a node on the entire network.",
                 "parameters": [
                     {
-                        "name": "secretKey",
+                        "name": "SECRET_KEY",
                         "in": "header",
                         "required": true,
                         "schema": {
@@ -279,6 +279,12 @@
                             "$ref": "#/components/schemas/Transfer"
                         }
                     },
+                    "ends": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/End"
+                        }
+                    },
                     "commits": {
                         "type": "array",
                         "items": {
@@ -290,6 +296,7 @@
                     "coinKey",
                     "roots",
                     "transfers",
+                    "ends",
                     "commits"
                 ]
             },
@@ -318,6 +325,22 @@
                     "targetHash",
                     "sequenceNumber",
                     "proofOfWork",
+                    "signature"
+                ]
+            },
+            "End": {
+                "description": "Represents a node ending a transaction chain.",
+                "type": "object",
+                "properties": {
+                    "previousHash": {
+                        "$ref": "#/components/schemas/Hash"
+                    },
+                    "signature": {
+                        "$ref": "#/components/schemas/Signature"
+                    }
+                },
+                "required": [
+                    "previousHash",
                     "signature"
                 ]
             },
