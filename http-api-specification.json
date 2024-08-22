@@ -1,422 +1,417 @@
 {
-  "openapi": "3.0.3",
-  "info": {
-      "title": "coinloop",
-      "description": "API specification for nodes in the CoinLoop network.",
-      "version": "1.0.0"
-  },
-  "paths": {
-      "/v1": {
-          "description": "Resource for handling the recipient node.",
-          "get": {
-              "operationId": "ping",
-              "summary": "Gets the recipient node.",
-              "description": "The recipient node will return information about itself. This endpoint is used for pings and healthchecks.",
-              "responses": {
-                  "200": {
-                      "description": "Success",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/Node"
-                              }
-                          }
-                      }
-                  },
-                  "401": {
-                      "$ref": "#/components/responses/Unauthorized"
-                  },
-                  "5XX": {
-                      "$ref": "#/components/responses/InternalError"
-                  }
-              }
-          }
-      },
-      "/v1/coins/{coinKey}": {
-          "description": "Resource for handling a coin identified by it's coinKey",
-          "get": {
-              "operationId": "getCoin",
-              "summary": "Gets the requested coin.",
-              "description": "The recipient node will return the coin identified by it's coinKey.",
-              "parameters": [
-                  {
-                      "name": "coinKey",
-                      "in": "path",
-                      "required": true,
-                      "schema": {
-                          "$ref": "#/components/schemas/Key"
-                      }
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Success",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/Coin"
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "$ref": "#/components/responses/BadRequest"
-                  },
-                  "401": {
-                      "$ref": "#/components/responses/Unauthorized"
-                  },
-                  "404": {
-                      "$ref": "#/components/responses/NotFound"
-                  },
-                  "5XX": {
-                      "$ref": "#/components/responses/InternalError"
-                  }
-              }
-          },
-          "patch": {
-              "operationId": "patchCoin",
-              "summary": "Creates or updates a coin.",
-              "description": "The recipient node will create a new coin if not found and merge if they do. The recipient node will return the updated coin.",
-              "parameters": [
-                  {
-                      "name": "coinKey",
-                      "in": "path",
-                      "required": true,
-                      "schema": {
-                          "$ref": "#/components/schemas/Key"
-                      }
-                  }
-              ],
-              "requestBody": {
-                  "required": true,
-                  "content": {
-                      "application/json": {
-                          "schema": {
-                              "$ref": "#/components/schemas/Coin"
-                          }
-                      }
-                  }
-              },
-              "responses": {
-                  "200": {
-                      "description": "Success",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/Coin"
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "$ref": "#/components/responses/BadRequest"
-                  },
-                  "401": {
-                      "$ref": "#/components/responses/Unauthorized"
-                  },
-                  "404": {
-                      "$ref": "#/components/responses/NotFound"
-                  },
-                  "5XX": {
-                      "$ref": "#/components/responses/InternalError"
-                  }
-              }
-          }
-      },
-      "/v1/nodes/{nodeKey}": {
-          "description": "Resource for handling a node identified by it's nodeKey.",
-          "get": {
-              "operationId": "getNode",
-              "summary": "Lists the closest nodes to the requested nodeKey.",
-              "description": "The recipient node will return the closest nodes it has stored to the nodeKey. Clients should recursively use this method to find a target node. It is up to clients to measure nodeKey distances to make progress towards a target node.",
-              "parameters": [
-                  {
-                      "name": "nodeKey",
-                      "in": "path",
-                      "required": true,
-                      "schema": {
-                          "$ref": "#/components/schemas/Key"
-                      }
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Success",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "type": "array",
-                                  "items": {
-                                      "$ref": "#/components/schemas/Node"
-                                  }
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "$ref": "#/components/responses/BadRequest"
-                  },
-                  "401": {
-                      "$ref": "#/components/responses/Unauthorized"
-                  },
-                  "5XX": {
-                      "$ref": "#/components/responses/InternalError"
-                  }
-              }
-          }
-      }
-  },
-  "components": {
-      "responses": {
-          "BadRequest": {
-              "description": "Bad request.",
-              "content": {
-                  "application/json": {
-                      "schema": {
-                          "$ref": "#/components/schemas/Error"
-                      }
-                  }
-              }
-          },
-          "Unauthorized": {
-              "description": "Unauthorized.",
-              "content": {
-                  "application/json": {
-                      "schema": {
-                          "$ref": "#/components/schemas/Error"
-                      }
-                  }
-              }
-          },
-          "NotFound": {
-              "description": "The specified resource was not found.",
-              "content": {
-                  "application/json": {
-                      "schema": {
-                          "$ref": "#/components/schemas/Error"
-                      }
-                  }
-              }
-          },
-          "InternalError": {
-              "description": "Internal server error.",
-              "content": {
-                  "application/json": {
-                      "schema": {
-                          "$ref": "#/components/schemas/Error"
-                      }
-                  }
-              }
-          }
-      },
-      "schemas": {
-          "Coin": {
-              "description": "Represents a value in the distributed hash table. A coin tracks valid transaction chains and commits from other nodes. A node will use commits to calculate the current consensus transaction chain.",
-              "type": "object",
-              "properties": {
-                  "coinKey": {
-                      "$ref": "#/components/schemas/Key"
-                  },
-                  "roots": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/components/schemas/Root"
+    "openapi": "3.0.3",
+    "info": {
+        "title": "coinloop",
+        "description": "API specification for nodes in the CoinLoop network.",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/v1": {
+            "description": "Resource for handling the recipient node.",
+            "get": {
+                "operationId": "ping",
+                "summary": "Gets the recipient node.",
+                "description": "The recipient node will return information about itself. This endpoint is used for pings and healthchecks.",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Node"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "5XX": {
+                        "$ref": "#/components/responses/InternalError"
                     }
-                  },
-                  "transfers": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/components/schemas/Transfer"
+                }
+            }
+        },
+        "/v1/coins/{coinKey}": {
+            "description": "Resource for handling a coin identified by it's coinKey",
+            "get": {
+                "operationId": "getCoin",
+                "summary": "Gets the requested coin.",
+                "description": "The recipient node will return the coin identified by it's coinKey.",
+                "parameters": [
+                    {
+                        "name": "coinKey",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Key"
+                        }
                     }
-                  },
-                  "commits": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/components/schemas/Commit"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Coin"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "5XX": {
+                        "$ref": "#/components/responses/InternalError"
                     }
-                  }
-              },
-              "required": [
-                  "coinKey",
-                  "roots",
-                  "transfers",
-                  "commits"
-              ]
-          },
-          "Commit": {
-              "description": "Represents a signed declaration from a node that a target transaction is the currently the consensus transaction.",
-              "type": "object",
-              "properties": {
-                  "targetHash": {
-                      "$ref": "#/components/schemas/Hash"
-                  },
-                  "sequenceNumber": {
-                      "$ref": "#/components/schemas/UInt32"
-                  },
-                  "proofOfWork": {
-                      "$ref": "#/components/schemas/ProofOfWork"
-                  },
-                  "signature": {
-                      "$ref": "#/components/schemas/Signature"
-                  }
-              },
-              "required": [
-                  "targetHash",
-                  "sequenceNumber",
-                  "proofOfWork",
-                  "signature"
-              ]
-          },
-          "Error": {
-              "type": "object",
-              "properties": {
-                  "code": {
-                      "type": "string"
-                  },
-                  "message": {
-                      "type": "string"
-                  }
-              },
-              "required": [
-                  "code",
-                  "message"
-              ]
-          },
-          "Hash": {
-              "description": "Represents a md5 checksum. Encoded as base64.",
-              "type": "string",
-              "pattern": "^[-A-Za-z0-9+/]*={0,3}$",
-              "minLength": 24,
-              "maxLength": 24
-          },
-          "UInt32": {
-              "description": "An unsigned integer.",
-              "type": "integer",
-              "format": "int32",
-              "minimum": 0,
-              "maximum": 4294967295
-          },
-          "Key": {
-              "description": "Represents a key in the distributed hash table. When referred to as 'nodeKey' this represents hash160(publicKey) of a node's identity. When referred to as 'coinKey' this represents hash160(nodeKey + bytes) of a proof of work. Encoded as base64.",
-              "type": "string",
-              "pattern": "^[-A-Za-z0-9+/]*={0,3}$",
-              "minLength": 28,
-              "maxLength": 28
-          },
-          "Node": {
-              "description": "Represents information about a node.",
-              "type": "object",
-              "properties": {
-                  "version": {
-                      "type": "integer",
-                      "minimum": 1
-                  },
-                  "ip": {
-                      "type": "string",
-                      "minLength": 11,
-                      "maxLength": 15
-                  },
-                  "port": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 65535
-                  },
-                  "rangeBits": {
-                      "$ref": "#/components/schemas/RangeBits"
-                  },
-                  "proofOfWork": {
-                      "$ref": "#/components/schemas/ProofOfWork"
-                  },
-                  "signature": {
-                      "$ref": "#/components/schemas/Signature"
-                  }
-              },
-              "required": [
-                  "version",
-                  "ip",
-                  "port",
-                  "rangeBits",
-                  "pageSizeBytes",
-                  "proofOfWork",
-                  "signature"
-              ]
-          },
-          "ProofOfWork": {
-              "description": "Represents proof of work by a given nodeKey. A proof of work score is given by the bitwise distance of hash160(nodeKey + bytes) and the nodeKey.",
-              "type": "object",
-              "properties": {
-                  "nodeKey": {
-                      "$ref": "#/components/schemas/Key"
-                  },
-                  "bytes": {
-                      "type": "string",
-                      "pattern": "^[-A-Za-z0-9+/]*={0,3}$",
-                      "minLength": 44,
-                      "maxLength": 44
-                  }
-              },
-              "required": [
-                  "nodeKey",
-                  "bytes"
-              ]
-          },
-          "RangeBits": {
-              "description": "Represents a bitwise distance.",
-              "type": "integer",
-              "format": "int32",
-              "minimum": 0,
-              "maximum": 160
-          },
-          "Root": {
-              "description": "Represents the mining of a new coin and ownership being assigned to the proofOfWork nodeKey.",
-              "type": "object",
-              "properties": {
-                  "proofOfWork": {
-                      "$ref": "#/components/schemas/ProofOfWork"
-                  },
-                  "signature": {
-                      "$ref": "#/components/schemas/Signature"
-                  }
-              },
-              "required": [
-                  "proofOfWork",
-                  "signature"
-              ]
-          },
-          "Signature": {
-              "description": "A signature produced from a node identity private key. Encoded as base64.",
-              "type": "string",
-              "pattern": "^[-A-Za-z0-9+/]*={0,3}$",
-              "minLength": 96,
-              "maxLength": 96
-          },
-          "Transfer": {
-              "description": "Represents a node from a previous transaction assigning ownership to a new nodeKey.",
-              "type": "object",
-              "properties": {
-                  "index": {
-                      "type": "integer",
-                      "format": "int32",
-                      "minimum": 1,
-                      "maximum": 255
-                  },
-                  "previousHash": {
-                      "$ref": "#/components/schemas/Hash"
-                  },
-                  "nodeKey": {
-                      "$ref": "#/components/schemas/Key"
-                  },
-                  "signature": {
-                      "$ref": "#/components/schemas/Signature"
-                  }
-              },
-              "required": [
-                  "index",
-                  "previousHash",
-                  "nodeKey",
-                  "signature"
-              ]
-          }
-      }
-  }
+                }
+            },
+            "patch": {
+                "operationId": "patchCoin",
+                "summary": "Creates or updates a coin.",
+                "description": "The recipient node will create a new coin if not found and merge if they do. The recipient node will return the updated coin.",
+                "parameters": [
+                    {
+                        "name": "coinKey",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Key"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Coin"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Coin"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "5XX": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                }
+            }
+        },
+        "/v1/nodes/{nodeKey}": {
+            "description": "Resource for handling a node identified by it's nodeKey.",
+            "get": {
+                "operationId": "getNode",
+                "summary": "Lists the closest nodes to the requested nodeKey.",
+                "description": "The recipient node will return the closest nodes it has stored to the nodeKey. Clients should recursively use this method to find a target node. It is up to clients to measure nodeKey distances to make progress towards a target node.",
+                "parameters": [
+                    {
+                        "name": "nodeKey",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Key"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Node"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "5XX": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "responses": {
+            "BadRequest": {
+                "description": "Bad request.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "Unauthorized.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "NotFound": {
+                "description": "The specified resource was not found.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "InternalError": {
+                "description": "Internal server error.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
+            "Coin": {
+                "description": "Represents a value in the distributed hash table. A coin tracks valid transaction chains and commits from other nodes. A node will use commits to calculate the current consensus transaction chain.",
+                "type": "object",
+                "properties": {
+                    "coinKey": {
+                        "$ref": "#/components/schemas/Key"
+                    },
+                    "roots": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Root"
+                        }
+                    },
+                    "transfers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Transfer"
+                        }
+                    },
+                    "commits": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Commit"
+                        }
+                    }
+                },
+                "required": [
+                    "coinKey",
+                    "roots",
+                    "transfers",
+                    "commits"
+                ]
+            },
+            "Commit": {
+                "description": "Represents a signed declaration from a node that a target transaction is the currently the consensus transaction.",
+                "type": "object",
+                "properties": {
+                    "targetHash": {
+                        "$ref": "#/components/schemas/Hash"
+                    },
+                    "sequenceNumber": {
+                        "description": "An unsigned integer.",
+                        "type": "integer",
+                        "format": "int32",
+                        "minimum": 0,
+                        "maximum": 4294967295
+                    },
+                    "proofOfWork": {
+                        "$ref": "#/components/schemas/ProofOfWork"
+                    },
+                    "signature": {
+                        "$ref": "#/components/schemas/Signature"
+                    }
+                },
+                "required": [
+                    "targetHash",
+                    "sequenceNumber",
+                    "proofOfWork",
+                    "signature"
+                ]
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "message"
+                ]
+            },
+            "Hash": {
+                "description": "Represents a 32 byte sha256(sha256(value) hash. Encoded as base64url.",
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "minLength": 43,
+                "maxLength": 43,
+                "format": ""
+            },
+            "Key": {
+                "description": "Represents a key in the distributed hash table. When referred to as 'nodeKey' this represents ripemd(sha256(publicKey)) of a node's identity. When referred to as 'coinKey' this represents ripemd(sha256(nodeKey + bytes)) of a proof of work. Encoded as base64url.",
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "minLength": 27,
+                "maxLength": 27
+            },
+            "Node": {
+                "description": "Represents information about a node.",
+                "type": "object",
+                "properties": {
+                    "version": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "ip": {
+                        "type": "string",
+                        "minLength": 11,
+                        "maxLength": 15
+                    },
+                    "port": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 65535
+                    },
+                    "rangeBits": {
+                        "description": "Represents a bitwise distance.",
+                        "type": "integer",
+                        "format": "int32",
+                        "minimum": 0,
+                        "maximum": 160
+                    },
+                    "proofOfWork": {
+                        "$ref": "#/components/schemas/ProofOfWork"
+                    },
+                    "signature": {
+                        "$ref": "#/components/schemas/Signature"
+                    }
+                },
+                "required": [
+                    "version",
+                    "ip",
+                    "port",
+                    "rangeBits",
+                    "pageSizeBytes",
+                    "proofOfWork",
+                    "signature"
+                ]
+            },
+            "ProofOfWork": {
+                "description": "Represents proof of work by a given nodeKey. A proof of work score is given by the bitwise distance of ripemd(sha256(nodeKey + bytes)) and the nodeKey.",
+                "type": "object",
+                "properties": {
+                    "nodeKey": {
+                        "$ref": "#/components/schemas/Key"
+                    },
+                    "bytes": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9_-]+$",
+                        "minLength": 43,
+                        "maxLength": 43
+                    }
+                },
+                "required": [
+                    "nodeKey",
+                    "bytes"
+                ]
+            },
+            "Root": {
+                "description": "Represents the mining of a new coin and ownership being assigned to the proofOfWork nodeKey.",
+                "type": "object",
+                "properties": {
+                    "proofOfWork": {
+                        "$ref": "#/components/schemas/ProofOfWork"
+                    },
+                    "signature": {
+                        "$ref": "#/components/schemas/Signature"
+                    }
+                },
+                "required": [
+                    "proofOfWork",
+                    "signature"
+                ]
+            },
+            "Signature": {
+                "description": "A signature produced from a node identity private key. Encoded as base64.",
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "minLength": 94,
+                "maxLength": 96
+            },
+            "Transfer": {
+                "description": "Represents a node from a previous transaction assigning ownership to a new nodeKey.",
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer",
+                        "format": "int32",
+                        "minimum": 1,
+                        "maximum": 255
+                    },
+                    "previousHash": {
+                        "$ref": "#/components/schemas/Hash"
+                    },
+                    "nodeKey": {
+                        "$ref": "#/components/schemas/Key"
+                    },
+                    "signature": {
+                        "$ref": "#/components/schemas/Signature"
+                    }
+                },
+                "required": [
+                    "index",
+                    "previousHash",
+                    "nodeKey",
+                    "signature"
+                ]
+            }
+        }
+    }
 }
