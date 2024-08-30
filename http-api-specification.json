@@ -32,19 +32,19 @@
                 }
             }
         },
-        "/v1/nodes/{nodeKey}": {
-            "description": "Resource for handling a node identified by it's nodeKey.",
+        "/v1/nodes/{publicKeyHash160}": {
+            "description": "Resource for handling a node identified by it's publicKeyHash160.",
             "get": {
                 "operationId": "getNode",
-                "summary": "Lists the closest nodes to the requested nodeKey.",
-                "description": "The recipient node will return the closest nodes it has stored to the nodeKey. Clients should recursively use this method to find a target node. It is up to clients to measure nodeKey distances to make progress towards a target node.",
+                "summary": "Lists the closest nodes to the requested publicKeyHash160.",
+                "description": "The recipient node will return the closest nodes it has stored to the publicKeyHash160. Clients should recursively use this method to find a target node. It is up to clients to measure publicKeyHash160 distances to make progress towards a target node.",
                 "parameters": [
                     {
-                        "name": "nodeKey",
+                        "name": "publicKeyHash160",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "$ref": "#/components/schemas/Key"
+                            "$ref": "#/components/schemas/Hash160"
                         }
                     }
                 ],
@@ -74,12 +74,12 @@
                 }
             }
         },
-        "/v1/nodes/{nodeKey}/coins": {
-            "description": "Resource for exporting all coinKeys currently held by a node.",
+        "/v1/nodes/{publicKeyHash160}/coins": {
+            "description": "Resource for exporting all proofOfWorkHash160s currently held by a node.",
             "get": {
                 "operationId": "listNodeCoins",
-                "summary": "Lists all coinKeys current held by a node.",
-                "description": "Returns a list of coinKeys that are currently held by a node. This operation is primarily used for exporting coinKeys mined by the node itself, for use in a wallet application, and is protected by a secret key. This operation does not return all coinKeys held by on a node on the entire network.",
+                "summary": "Lists all proofOfWorkHash160s current held by a node.",
+                "description": "Returns a list of proofOfWorkHash160s that are currently held by a node. This operation is primarily used for exporting proofOfWorkHash160s mined by the node itself, for use in a wallet application, and is protected by a secret key. This operation does not return all proofOfWorkHash160s held by on a node on the entire network.",
                 "parameters": [
                     {
                         "name": "SECRET_KEY",
@@ -90,11 +90,11 @@
                         }
                     },
                     {
-                        "name": "nodeKey",
+                        "name": "publicKeyHash160",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "$ref": "#/components/schemas/Key"
+                            "$ref": "#/components/schemas/Hash160"
                         }
                     }
                 ],
@@ -106,7 +106,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Key"
+                                        "$ref": "#/components/schemas/Hash160"
                                     }
                                 }
                             }
@@ -124,19 +124,19 @@
                 }
             }
         },
-        "/v1/coins/{coinKey}": {
-            "description": "Resource for handling a coin identified by it's coinKey",
+        "/v1/coins/{proofOfWorkHash160}": {
+            "description": "Resource for handling a coin identified by it's proofOfWorkHash160",
             "get": {
                 "operationId": "getCoin",
                 "summary": "Gets the requested coin.",
-                "description": "The recipient node will return the coin identified by it's coinKey.",
+                "description": "The recipient node will return the coin identified by it's proofOfWorkHash160.",
                 "parameters": [
                     {
-                        "name": "coinKey",
+                        "name": "proofOfWorkHash160",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "$ref": "#/components/schemas/Key"
+                            "$ref": "#/components/schemas/Hash160"
                         }
                     }
                 ],
@@ -171,11 +171,11 @@
                 "description": "The recipient node will create a new coin if not found and merge if they do. The recipient node will return the updated coin.",
                 "parameters": [
                     {
-                        "name": "coinKey",
+                        "name": "proofOfWorkHash160",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "$ref": "#/components/schemas/Key"
+                            "$ref": "#/components/schemas/Hash160"
                         }
                     }
                 ],
@@ -264,8 +264,8 @@
                 "description": "Represents a value in the distributed hash table. A coin tracks valid transaction chains and commits from other nodes. A node will use commits to calculate the current consensus transaction chain.",
                 "type": "object",
                 "properties": {
-                    "coinKey": {
-                        "$ref": "#/components/schemas/Key"
+                    "proofOfWorkHash160": {
+                        "$ref": "#/components/schemas/Hash160"
                     },
                     "roots": {
                         "type": "array",
@@ -293,7 +293,7 @@
                     }
                 },
                 "required": [
-                    "coinKey",
+                    "proofOfWorkHash160",
                     "roots",
                     "transfers",
                     "ends",
@@ -304,8 +304,8 @@
                 "description": "Represents a signed declaration from a node that a target transaction is the currently the consensus transaction.",
                 "type": "object",
                 "properties": {
-                    "targetHash": {
-                        "$ref": "#/components/schemas/Hash"
+                    "targetHash128": {
+                        "$ref": "#/components/schemas/Hash128"
                     },
                     "sequenceNumber": {
                         "description": "An unsigned integer.",
@@ -322,7 +322,7 @@
                     }
                 },
                 "required": [
-                    "targetHash",
+                    "targetHash128",
                     "sequenceNumber",
                     "proofOfWork",
                     "signature"
@@ -332,15 +332,15 @@
                 "description": "Represents a node ending a transaction chain.",
                 "type": "object",
                 "properties": {
-                    "previousHash": {
-                        "$ref": "#/components/schemas/Hash"
+                    "previousHash128": {
+                        "$ref": "#/components/schemas/Hash128"
                     },
                     "signature": {
                         "$ref": "#/components/schemas/Signature"
                     }
                 },
                 "required": [
-                    "previousHash",
+                    "previousHash128",
                     "signature"
                 ]
             },
@@ -359,19 +359,19 @@
                     "message"
                 ]
             },
-            "Hash": {
-                "description": "Represents a 32 byte sha256(sha256(value) hash. Encoded as base64url.",
+            "Hash128": {
+                "description": "Represents a 16 byte md5(sha256(value)) hash. Encoded as base64url.",
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
-                "minLength": 43,
-                "maxLength": 43
+                "minLength": 24,
+                "maxLength": 24
             },
-            "Key": {
-                "description": "Represents a key in the distributed hash table. When referred to as 'nodeKey' this represents ripemd(sha256(publicKey)) of a node's identity. When referred to as 'coinKey' this represents ripemd(sha256(nodeKey + bytes)) of a proof of work. Encoded as base64url.",
+            "Hash160": {
+                "description": "Represents a 20 byte ripemd(sha256(value)) hash. Encoded as base64url.",
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
-                "minLength": 27,
-                "maxLength": 27
+                "minLength": 28,
+                "maxLength": 28
             },
             "Node": {
                 "description": "Represents information about a node.",
@@ -422,11 +422,11 @@
                 ]
             },
             "ProofOfWork": {
-                "description": "Represents proof of work by a given nodeKey. A proof of work score is given by the bitwise distance of ripemd(sha256(nodeKey + bytes)) and the nodeKey.",
+                "description": "Represents proof of work by a given publicKeyHash160. A proof of work score is given by the bitwise distance of hash128(publicKeyHash160 + bytes) and the publicKeyHash160.",
                 "type": "object",
                 "properties": {
-                    "nodeKey": {
-                        "$ref": "#/components/schemas/Key"
+                    "publicKeyHash160": {
+                        "$ref": "#/components/schemas/Hash160"
                     },
                     "bytes": {
                         "type": "string",
@@ -436,12 +436,12 @@
                     }
                 },
                 "required": [
-                    "nodeKey",
+                    "publicKeyHash160",
                     "bytes"
                 ]
             },
             "Root": {
-                "description": "Represents the mining of a new coin and ownership being assigned to the proofOfWork nodeKey.",
+                "description": "Represents the mining of a new coin and ownership being assigned to the proofOfWork publicKeyHash160.",
                 "type": "object",
                 "properties": {
                     "proofOfWork": {
@@ -471,7 +471,7 @@
                 "maxLength": 96
             },
             "Transfer": {
-                "description": "Represents a node from a previous transaction assigning ownership to a new nodeKey.",
+                "description": "Represents a node from a previous transaction assigning ownership to a new publicKeyHash160.",
                 "type": "object",
                 "properties": {
                     "index": {
@@ -480,11 +480,11 @@
                         "minimum": 1,
                         "maximum": 255
                     },
-                    "previousHash": {
-                        "$ref": "#/components/schemas/Hash"
+                    "previousHash128": {
+                        "$ref": "#/components/schemas/Hash128"
                     },
-                    "nodeKey": {
-                        "$ref": "#/components/schemas/Key"
+                    "publicKeyHash160": {
+                        "$ref": "#/components/schemas/Hash160"
                     },
                     "signature": {
                         "$ref": "#/components/schemas/Signature"
@@ -492,8 +492,8 @@
                 },
                 "required": [
                     "index",
-                    "previousHash",
-                    "nodeKey",
+                    "previousHash128",
+                    "publicKeyHash160",
                     "signature"
                 ]
             }
