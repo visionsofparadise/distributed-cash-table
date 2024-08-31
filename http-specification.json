@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "coinloop",
-        "description": "API specification for nodes in the CoinLoop network.",
+        "title": "Distributed Cash Table HTTP API",
+        "description": "API specification for nodes participating in the 'Distributed Cash Table' DHT network.",
         "version": "1.0.0"
     },
     "paths": {
@@ -74,62 +74,12 @@
                 }
             }
         },
-        "/v1/nodes/{publicKeyHash160}/coins": {
-            "description": "Resource for exporting all proofOfWorkHash160s currently held by a node.",
+        "/v1/tokens/{proofOfWorkHash160}": {
+            "description": "Resource for handling a token identified by it's proofOfWorkHash160",
             "get": {
-                "operationId": "listNodeCoins",
-                "summary": "Lists all proofOfWorkHash160s current held by a node.",
-                "description": "Returns a list of proofOfWorkHash160s that are currently held by a node. This operation is primarily used for exporting proofOfWorkHash160s mined by the node itself, for use in a wallet application, and is protected by a secret key. This operation does not return all proofOfWorkHash160s held by on a node on the entire network.",
-                "parameters": [
-                    {
-                        "name": "SECRET_KEY",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/SecretKey"
-                        }
-                    },
-                    {
-                        "name": "publicKeyHash160",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/Hash160"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Hash160"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "5XX": {
-                        "$ref": "#/components/responses/InternalError"
-                    }
-                }
-            }
-        },
-        "/v1/coins/{proofOfWorkHash160}": {
-            "description": "Resource for handling a coin identified by it's proofOfWorkHash160",
-            "get": {
-                "operationId": "getCoin",
-                "summary": "Gets the requested coin.",
-                "description": "The recipient node will return the coin identified by it's proofOfWorkHash160.",
+                "operationId": "getToken",
+                "summary": "Gets the requested token.",
+                "description": "The recipient will return the token identified by it's proofOfWorkHash160.",
                 "parameters": [
                     {
                         "name": "proofOfWorkHash160",
@@ -146,7 +96,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Coin"
+                                    "$ref": "#/components/schemas/Token"
                                 }
                             }
                         }
@@ -166,9 +116,9 @@
                 }
             },
             "patch": {
-                "operationId": "patchCoin",
-                "summary": "Creates or updates a coin.",
-                "description": "The recipient node will create a new coin if not found and merge if they do. The recipient node will return the updated coin.",
+                "operationId": "patchToken",
+                "summary": "Creates or updates a token.",
+                "description": "The recipient will create a new token if not found and merge if they do. The recipient will return the updated token.",
                 "parameters": [
                     {
                         "name": "proofOfWorkHash160",
@@ -184,7 +134,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Coin"
+                                "$ref": "#/components/schemas/Token"
                             }
                         }
                     }
@@ -195,7 +145,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Coin"
+                                    "$ref": "#/components/schemas/Token"
                                 }
                             }
                         }
@@ -260,8 +210,8 @@
             }
         },
         "schemas": {
-            "Coin": {
-                "description": "Represents a value in the distributed hash table. A coin tracks valid transaction chains and commits from other nodes. A node will use commits to calculate the current consensus transaction chain.",
+            "Token": {
+                "description": "Represents a value in the distributed hash table. A token tracks valid state chains and commits from other identities. An identity will use commits to calculate the current consensus state chain.",
                 "type": "object",
                 "properties": {
                     "proofOfWorkHash160": {
@@ -301,7 +251,7 @@
                 ]
             },
             "Commit": {
-                "description": "Represents a signed declaration from a node that a target transaction is the currently the consensus transaction.",
+                "description": "Represents a signed declaration from a node that a target state is the currently the consensus state.",
                 "type": "object",
                 "properties": {
                     "targetHash128": {
@@ -329,7 +279,7 @@
                 ]
             },
             "End": {
-                "description": "Represents a node ending a transaction chain.",
+                "description": "Represents an identity ending a state chain and relinqueshing ownership so that a new state chain can become consensus.",
                 "type": "object",
                 "properties": {
                     "previousHash128": {
@@ -374,7 +324,7 @@
                 "maxLength": 28
             },
             "Node": {
-                "description": "Represents information about a node.",
+                "description": "A node is an agent in the network, typically a server, that is utilizing the DCT protocol.",
                 "type": "object",
                 "properties": {
                     "version": {
@@ -422,7 +372,7 @@
                 ]
             },
             "ProofOfWork": {
-                "description": "Represents proof of work by a given publicKeyHash160. A proof of work score is given by the bitwise distance of hash128(publicKeyHash160 + bytes) and the publicKeyHash160.",
+                "description": "Represents proof of work by a given identity. A proof of work score is given by the bitwise distance of hash128(publicKeyHash160 + bytes) and the publicKeyHash160.",
                 "type": "object",
                 "properties": {
                     "publicKeyHash160": {
@@ -441,7 +391,7 @@
                 ]
             },
             "Root": {
-                "description": "Represents the mining of a new coin and ownership being assigned to the proofOfWork publicKeyHash160.",
+                "description": "Represents the creation of a new token and ownership being assigned to the proofOfWork publicKeyHash160.",
                 "type": "object",
                 "properties": {
                     "proofOfWork": {
@@ -464,14 +414,14 @@
                 "maxLength": 43
             },
             "Signature": {
-                "description": "A signature produced from a node identity private key. Encoded as base64.",
+                "description": "A signature produced from a private key. Encoded as base64.",
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
                 "minLength": 94,
                 "maxLength": 96
             },
             "Transfer": {
-                "description": "Represents a node from a previous transaction assigning ownership to a new publicKeyHash160.",
+                "description": "Represents an identity from a previous state assigning ownership to a new identity.",
                 "type": "object",
                 "properties": {
                     "index": {
