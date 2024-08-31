@@ -341,7 +341,7 @@
                         "minimum": 1,
                         "maximum": 65535
                     },
-                    "httpPort": {
+                    "tcpPort": {
                         "type": "number",
                         "minimum": 1,
                         "maximum": 65535
@@ -364,7 +364,7 @@
                     "version",
                     "ip",
                     "udpPort",
-                    "httpPort",
+                    "tcpPort",
                     "rangeBits",
                     "pageSizeBytes",
                     "proofOfWork",
