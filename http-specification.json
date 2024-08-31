@@ -313,15 +313,15 @@
                 "description": "Represents a 16 byte md5(sha256(value)) hash. Encoded as base64url.",
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
-                "minLength": 24,
-                "maxLength": 24
+                "minLength": 22,
+                "maxLength": 22
             },
             "Hash160": {
                 "description": "Represents a 20 byte ripemd(sha256(value)) hash. Encoded as base64url.",
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
-                "minLength": 28,
-                "maxLength": 28
+                "minLength": 27,
+                "maxLength": 27
             },
             "Node": {
                 "description": "A node is an agent in the network, typically a server, that is utilizing the DCT protocol.",
@@ -405,13 +405,6 @@
                     "proofOfWork",
                     "signature"
                 ]
-            },
-            "SecretKey": {
-                "description": "Represents a 32 byte secret key. Encoded as base64url.",
-                "type": "string",
-                "pattern": "^[A-Za-z0-9_-]+$",
-                "minLength": 43,
-                "maxLength": 43
             },
             "Signature": {
                 "description": "A signature produced from a private key. Encoded as base64.",
