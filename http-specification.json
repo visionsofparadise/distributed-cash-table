@@ -32,16 +32,16 @@
                 }
             }
         },
-        "/v1/nodes/{publicKeyHash160}": {
-            "description": "Resource for handling a node identified by it's publicKeyHash160.",
+        "/v1/nodes": {
+            "description": "Resource for handling nodes in the recipients routing table.",
             "get": {
-                "operationId": "getNode",
-                "summary": "Lists the closest nodes to the requested publicKeyHash160.",
-                "description": "The recipient node will return the closest nodes it has stored to the publicKeyHash160. Clients should recursively use this method to find a target node. It is up to clients to measure publicKeyHash160 distances to make progress towards a target node.",
+                "operationId": "listNodes",
+                "summary": "Lists the closest nodes to the recipient or to the queried nodeKey.",
+                "description": "The recipient node will return the closest nodes it has stored, or closest to the queried nodeKey. Clients should recursively use this method to find a target node. It is up to clients to measure nodeKey distances to make progress towards a target node.",
                 "parameters": [
                     {
-                        "name": "publicKeyHash160",
-                        "in": "path",
+                        "name": "nodeKey",
+                        "in": "query",
                         "required": true,
                         "schema": {
                             "$ref": "#/components/schemas/Hash160"
@@ -74,15 +74,131 @@
                 }
             }
         },
-        "/v1/tokens/{proofOfWorkHash160}": {
-            "description": "Resource for handling a token identified by it's proofOfWorkHash160",
+        "/v1/nodes/{nodeKey}": {
+            "description": "Resource for handling a node identified by it's nodeKey in the recipients routing table.",
+            "get": {
+                "operationId": "getNode",
+                "summary": "Lists the closest nodes to the requested nodeKey.",
+                "description": "The recipient node will return the closest nodes it has stored to the nodeKey. Clients should recursively use this method to find a target node. It is up to clients to measure nodeKey distances to make progress towards a target node.",
+                "parameters": [
+                    {
+                        "name": "nodeKey",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Hash160"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Node"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "5XX": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                }
+            }
+        },
+        "/v1/tokens": {
+            "description": "Resource for handling a tokens",
+            "get": {
+                "operationId": "listTokens",
+                "summary": "Lists the recipient nodes tokens in ascending order. A cursor key may be returned if more tokens exist.",
+                "description": "The recipient will return a list of tokens in ascending order. A cursor key may be returned if more tokens exist.",
+                "parameters": [
+                    {
+                        "name": "tokenKey",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Hash160"
+                        }
+                    },
+                    {
+                        "name": "minimumKey",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Hash160"
+                        }
+                    },
+                    {
+                        "name": "maximumKey",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Hash160"
+                        }
+                    },
+                    {
+                        "name": "cursorKey",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/Hash160"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "tokens": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Token"
+                                            }
+                                        },
+                                        "cursorKey": {
+                                            "$ref": "#/components/schemas/Hash160"
+                                        }
+                                    },
+                                    "required": ["tokens"]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "5XX": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                }
+            }
+        },
+        "/v1/tokens/{tokenKey}": {
+            "description": "Resource for handling a token identified by it's tokenKey",
             "get": {
                 "operationId": "getToken",
                 "summary": "Gets the requested token.",
-                "description": "The recipient will return the token identified by it's proofOfWorkHash160.",
+                "description": "The recipient will return the token identified by it's tokenKey.",
                 "parameters": [
                     {
-                        "name": "proofOfWorkHash160",
+                        "name": "tokenKey",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -121,7 +237,7 @@
                 "description": "The recipient will create a new token if not found and merge if they do. The recipient will return the updated token.",
                 "parameters": [
                     {
-                        "name": "proofOfWorkHash160",
+                        "name": "tokenKey",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -214,7 +330,7 @@
                 "description": "Represents a value in the distributed hash table. A token tracks valid state chains and commits from other identities. An identity will use commits to calculate the current consensus state chain.",
                 "type": "object",
                 "properties": {
-                    "proofOfWorkHash160": {
+                    "tokenKey": {
                         "$ref": "#/components/schemas/Hash160"
                     },
                     "roots": {
@@ -243,7 +359,7 @@
                     }
                 },
                 "required": [
-                    "proofOfWorkHash160",
+                    "tokenKey",
                     "roots",
                     "transfers",
                     "ends",
@@ -254,7 +370,7 @@
                 "description": "Represents a signed declaration from a node that a target state is the currently the consensus state.",
                 "type": "object",
                 "properties": {
-                    "targetHash128": {
+                    "targetHash": {
                         "$ref": "#/components/schemas/Hash128"
                     },
                     "sequenceNumber": {
@@ -272,7 +388,7 @@
                     }
                 },
                 "required": [
-                    "targetHash128",
+                    "targetHash",
                     "sequenceNumber",
                     "proofOfWork",
                     "signature"
@@ -282,7 +398,7 @@
                 "description": "Represents an identity ending a state chain and relinqueshing ownership so that a new state chain can become consensus.",
                 "type": "object",
                 "properties": {
-                    "previousHash128": {
+                    "previousHash": {
                         "$ref": "#/components/schemas/Hash128"
                     },
                     "signature": {
@@ -290,7 +406,7 @@
                     }
                 },
                 "required": [
-                    "previousHash128",
+                    "previousHash",
                     "signature"
                 ]
             },
@@ -372,10 +488,10 @@
                 ]
             },
             "ProofOfWork": {
-                "description": "Represents proof of work by a given identity. A proof of work score is given by the bitwise distance of hash128(publicKeyHash160 + bytes) and the publicKeyHash160.",
+                "description": "Represents proof of work by a given identity. A proof of work score is given by the bitwise distance of hash160(nodeKey + bytes) and the nodeKey.",
                 "type": "object",
                 "properties": {
-                    "publicKeyHash160": {
+                    "nodeKey": {
                         "$ref": "#/components/schemas/Hash160"
                     },
                     "bytes": {
@@ -386,16 +502,22 @@
                     }
                 },
                 "required": [
-                    "publicKeyHash160",
+                    "nodeKey",
                     "bytes"
                 ]
             },
             "Root": {
-                "description": "Represents the creation of a new token and ownership being assigned to the proofOfWork publicKeyHash160.",
+                "description": "Represents the creation of a new token and ownership being assigned to the proofOfWork nodeKey.",
                 "type": "object",
                 "properties": {
                     "proofOfWork": {
                         "$ref": "#/components/schemas/ProofOfWork"
+                    },
+                    "bytes": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9_-]+$",
+                        "minLength": 22,
+                        "maxLength": 22
                     },
                     "signature": {
                         "$ref": "#/components/schemas/Signature"
@@ -423,10 +545,10 @@
                         "minimum": 1,
                         "maximum": 255
                     },
-                    "previousHash128": {
+                    "previousHash": {
                         "$ref": "#/components/schemas/Hash128"
                     },
-                    "publicKeyHash160": {
+                    "nodeKey": {
                         "$ref": "#/components/schemas/Hash160"
                     },
                     "signature": {
@@ -435,8 +557,8 @@
                 },
                 "required": [
                     "index",
-                    "previousHash128",
-                    "publicKeyHash160",
+                    "previousHash",
+                    "nodeKey",
                     "signature"
                 ]
             }
