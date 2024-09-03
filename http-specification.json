@@ -42,7 +42,6 @@
                     {
                         "name": "nodeKey",
                         "in": "query",
-                        "required": true,
                         "schema": {
                             "$ref": "#/components/schemas/Hash160"
                         }
@@ -121,17 +120,8 @@
                 "description": "The recipient will return a list of tokens in ascending order. A cursor key may be returned if more tokens exist.",
                 "parameters": [
                     {
-                        "name": "tokenKey",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/Hash160"
-                        }
-                    },
-                    {
                         "name": "minimumKey",
                         "in": "query",
-                        "required": true,
                         "schema": {
                             "$ref": "#/components/schemas/Hash160"
                         }
@@ -139,7 +129,6 @@
                     {
                         "name": "maximumKey",
                         "in": "query",
-                        "required": true,
                         "schema": {
                             "$ref": "#/components/schemas/Hash160"
                         }
