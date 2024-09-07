@@ -16,9 +16,10 @@
                     "200": {
                         "description": "Success",
                         "content": {
-                            "application/json": {
+                            "application/octet-stream": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Node"
+                                    "type": "string",
+                                    "format": "binary"
                                 }
                             }
                         }
@@ -51,51 +52,10 @@
                     "200": {
                         "description": "Success",
                         "content": {
-                            "application/json": {
+                            "application/octet-stream": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Node"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "5XX": {
-                        "$ref": "#/components/responses/InternalError"
-                    }
-                }
-            }
-        },
-        "/v1/nodes/{nodeKey}": {
-            "description": "Resource for handling a node identified by it's nodeKey in the recipients routing table.",
-            "get": {
-                "operationId": "getNode",
-                "summary": "Lists the closest nodes to the requested nodeKey.",
-                "description": "The recipient node will return the closest nodes it has stored to the nodeKey. Clients should recursively use this method to find a target node. It is up to clients to measure nodeKey distances to make progress towards a target node.",
-                "parameters": [
-                    {
-                        "name": "nodeKey",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/Hash160"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Node"
+                                    "type": "string",
+                                    "format": "binary"
                                 }
                             }
                         }
@@ -145,21 +105,10 @@
                     "200": {
                         "description": "Success",
                         "content": {
-                            "application/json": {
+                            "application/octet-stream": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "tokens": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Token"
-                                            }
-                                        },
-                                        "cursorKey": {
-                                            "$ref": "#/components/schemas/Hash160"
-                                        }
-                                    },
-                                    "required": ["tokens"]
+                                    "type": "string",
+                                    "format": "binary"
                                 }
                             }
                         }
@@ -199,9 +148,10 @@
                     "200": {
                         "description": "Success",
                         "content": {
-                            "application/json": {
+                            "application/octet-stream": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Token"
+                                    "type": "string",
+                                    "format": "binary"
                                 }
                             }
                         }
@@ -237,9 +187,10 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "application/octet-stream": {
                             "schema": {
-                                "$ref": "#/components/schemas/Token"
+                                "type": "string",
+                                "format": "binary"
                             }
                         }
                     }
@@ -248,9 +199,10 @@
                     "200": {
                         "description": "Success",
                         "content": {
-                            "application/json": {
+                            "application/octet-stream": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Token"
+                                    "type": "string",
+                                    "format": "binary"
                                 }
                             }
                         }
@@ -315,90 +267,6 @@
             }
         },
         "schemas": {
-            "Token": {
-                "description": "Represents a value in the distributed hash table. A token tracks valid state chains and commits from other identities. An identity will use commits to calculate the current consensus state chain.",
-                "type": "object",
-                "properties": {
-                    "tokenKey": {
-                        "$ref": "#/components/schemas/Hash160"
-                    },
-                    "roots": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Root"
-                        }
-                    },
-                    "transfers": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Transfer"
-                        }
-                    },
-                    "ends": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/End"
-                        }
-                    },
-                    "commits": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Commit"
-                        }
-                    }
-                },
-                "required": [
-                    "tokenKey",
-                    "roots",
-                    "transfers",
-                    "ends",
-                    "commits"
-                ]
-            },
-            "Commit": {
-                "description": "Represents a signed declaration from a node that a target state is the currently the consensus state.",
-                "type": "object",
-                "properties": {
-                    "targetHash": {
-                        "$ref": "#/components/schemas/Hash128"
-                    },
-                    "sequenceNumber": {
-                        "description": "An unsigned integer.",
-                        "type": "integer",
-                        "format": "int32",
-                        "minimum": 0,
-                        "maximum": 4294967295
-                    },
-                    "proofOfWork": {
-                        "$ref": "#/components/schemas/ProofOfWork"
-                    },
-                    "signature": {
-                        "$ref": "#/components/schemas/Signature"
-                    }
-                },
-                "required": [
-                    "targetHash",
-                    "sequenceNumber",
-                    "proofOfWork",
-                    "signature"
-                ]
-            },
-            "End": {
-                "description": "Represents an identity ending a state chain and relinqueshing ownership so that a new state chain can become consensus.",
-                "type": "object",
-                "properties": {
-                    "previousHash": {
-                        "$ref": "#/components/schemas/Hash128"
-                    },
-                    "signature": {
-                        "$ref": "#/components/schemas/Signature"
-                    }
-                },
-                "required": [
-                    "previousHash",
-                    "signature"
-                ]
-            },
             "Error": {
                 "type": "object",
                 "properties": {
@@ -414,142 +282,12 @@
                     "message"
                 ]
             },
-            "Hash128": {
-                "description": "Represents a 16 byte md5(sha256(value)) hash. Encoded as base64url.",
-                "type": "string",
-                "pattern": "^[A-Za-z0-9_-]+$",
-                "minLength": 22,
-                "maxLength": 22
-            },
             "Hash160": {
                 "description": "Represents a 20 byte ripemd(sha256(value)) hash. Encoded as base64url.",
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
                 "minLength": 27,
                 "maxLength": 27
-            },
-            "Node": {
-                "description": "A node is an agent in the network, typically a server, that is utilizing the DCT protocol.",
-                "type": "object",
-                "properties": {
-                    "version": {
-                        "type": "integer",
-                        "minimum": 1
-                    },
-                    "ip": {
-                        "type": "string",
-                        "minLength": 11,
-                        "maxLength": 15
-                    },
-                    "udpPort": {
-                        "type": "number",
-                        "minimum": 1,
-                        "maximum": 65535
-                    },
-                    "tcpPort": {
-                        "type": "number",
-                        "minimum": 1,
-                        "maximum": 65535
-                    },
-                    "rangeBits": {
-                        "description": "Represents a bitwise distance.",
-                        "type": "integer",
-                        "format": "int32",
-                        "minimum": 0,
-                        "maximum": 160
-                    },
-                    "proofOfWork": {
-                        "$ref": "#/components/schemas/ProofOfWork"
-                    },
-                    "signature": {
-                        "$ref": "#/components/schemas/Signature"
-                    }
-                },
-                "required": [
-                    "version",
-                    "ip",
-                    "udpPort",
-                    "tcpPort",
-                    "rangeBits",
-                    "pageSizeBytes",
-                    "proofOfWork",
-                    "signature"
-                ]
-            },
-            "ProofOfWork": {
-                "description": "Represents proof of work by a given identity. A proof of work score is given by the bitwise distance of hash160(nodeKey + bytes) and the nodeKey.",
-                "type": "object",
-                "properties": {
-                    "nodeKey": {
-                        "$ref": "#/components/schemas/Hash160"
-                    },
-                    "bytes": {
-                        "type": "string",
-                        "pattern": "^[A-Za-z0-9_-]+$",
-                        "minLength": 43,
-                        "maxLength": 43
-                    }
-                },
-                "required": [
-                    "nodeKey",
-                    "bytes"
-                ]
-            },
-            "Root": {
-                "description": "Represents the creation of a new token and ownership being assigned to the proofOfWork nodeKey.",
-                "type": "object",
-                "properties": {
-                    "proofOfWork": {
-                        "$ref": "#/components/schemas/ProofOfWork"
-                    },
-                    "bytes": {
-                        "type": "string",
-                        "pattern": "^[A-Za-z0-9_-]+$",
-                        "minLength": 22,
-                        "maxLength": 22
-                    },
-                    "signature": {
-                        "$ref": "#/components/schemas/Signature"
-                    }
-                },
-                "required": [
-                    "proofOfWork",
-                    "signature"
-                ]
-            },
-            "Signature": {
-                "description": "A signature produced from a private key. Encoded as base64.",
-                "type": "string",
-                "pattern": "^[A-Za-z0-9_-]+$",
-                "minLength": 94,
-                "maxLength": 96
-            },
-            "Transfer": {
-                "description": "Represents an identity from a previous state assigning ownership to a new identity.",
-                "type": "object",
-                "properties": {
-                    "index": {
-                        "type": "integer",
-                        "format": "int32",
-                        "minimum": 1,
-                        "maximum": 255
-                    },
-                    "previousHash": {
-                        "$ref": "#/components/schemas/Hash128"
-                    },
-                    "nodeKey": {
-                        "$ref": "#/components/schemas/Hash160"
-                    },
-                    "signature": {
-                        "$ref": "#/components/schemas/Signature"
-                    }
-                },
-                "required": [
-                    "index",
-                    "previousHash",
-                    "nodeKey",
-                    "signature"
-                ]
             }
         }
     }
