@@ -11,16 +11,13 @@
             "get": {
                 "operationId": "ping",
                 "summary": "Gets the recipient node.",
-                "description": "The recipient node will return information about itself. This endpoint is used for pings and healthchecks.",
+                "description": "Returns no content. This endpoint is used for pings and healthchecks.",
                 "responses": {
-                    "200": {
+                    "204": {
                         "description": "Success",
-                        "content": {
-                            "application/octet-stream": {
-                                "schema": {
-                                    "type": "string",
-                                    "format": "binary"
-                                }
+                        "headers": {
+                            "Node": {
+                                "$ref": "#/components/headers/Node"
                             }
                         }
                     },
@@ -51,6 +48,11 @@
                 "responses": {
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "Node": {
+                                "$ref": "#/components/headers/Node"
+                            }
+                        },
                         "content": {
                             "application/octet-stream": {
                                 "schema": {
@@ -104,6 +106,11 @@
                 "responses": {
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "Node": {
+                                "$ref": "#/components/headers/Node"
+                            }
+                        },
                         "content": {
                             "application/octet-stream": {
                                 "schema": {
@@ -147,6 +154,11 @@
                 "responses": {
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "Node": {
+                                "$ref": "#/components/headers/Node"
+                            }
+                        },
                         "content": {
                             "application/octet-stream": {
                                 "schema": {
@@ -198,6 +210,11 @@
                 "responses": {
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "Node": {
+                                "$ref": "#/components/headers/Node"
+                            }
+                        },
                         "content": {
                             "application/octet-stream": {
                                 "schema": {
@@ -224,9 +241,24 @@
         }
     },
     "components": {
+        "headers": {
+            "Node": {
+                "description": "An optional field containing information on the node requesting/responding. Nodes will use this header to discover nodes on the network. Encoded as base64url.",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                }
+            }
+        },
         "responses": {
             "BadRequest": {
                 "description": "Bad request.",
+                "headers": {
+                    "Node": {
+                        "$ref": "#/components/headers/Node"
+                    }
+                },
                 "content": {
                     "application/json": {
                         "schema": {
@@ -237,6 +269,11 @@
             },
             "Unauthorized": {
                 "description": "Unauthorized.",
+                "headers": {
+                    "Node": {
+                        "$ref": "#/components/headers/Node"
+                    }
+                },
                 "content": {
                     "application/json": {
                         "schema": {
@@ -247,6 +284,11 @@
             },
             "NotFound": {
                 "description": "The specified resource was not found.",
+                "headers": {
+                    "Node": {
+                        "$ref": "#/components/headers/Node"
+                    }
+                },
                 "content": {
                     "application/json": {
                         "schema": {
@@ -257,6 +299,11 @@
             },
             "InternalError": {
                 "description": "Internal server error.",
+                "headers": {
+                    "Node": {
+                        "$ref": "#/components/headers/Node"
+                    }
+                },
                 "content": {
                     "application/json": {
                         "schema": {
