@@ -12,12 +12,17 @@
                 "operationId": "ping",
                 "summary": "Gets the recipient node.",
                 "description": "Returns no content. This endpoint is used for pings and healthchecks.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/headers/X-Dct-Node"
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "Success",
                         "headers": {
-                            "Node": {
-                                "$ref": "#/components/headers/Node"
+                            "X-Dct-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node"
                             }
                         }
                     },
@@ -38,6 +43,9 @@
                 "description": "The recipient node will return the closest nodes it has stored, or closest to the queried nodeKey. Clients should recursively use this method to find a target node. It is up to clients to measure nodeKey distances to make progress towards a target node.",
                 "parameters": [
                     {
+                        "$ref": "#/components/headers/X-Dct-Node"
+                    },
+                    {
                         "name": "nodeKey",
                         "in": "query",
                         "schema": {
@@ -49,8 +57,8 @@
                     "200": {
                         "description": "Success",
                         "headers": {
-                            "Node": {
-                                "$ref": "#/components/headers/Node"
+                            "X-Dct-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node"
                             }
                         },
                         "content": {
@@ -79,8 +87,11 @@
             "get": {
                 "operationId": "listTokens",
                 "summary": "Lists the recipient nodes tokens in ascending order. A cursor key may be returned if more tokens exist.",
-                "description": "The recipient will return a list of tokens in ascending order. A cursor key may be returned if more tokens exist.",
+                "description": "The recipient will return a list of tokens as a chunked stream in ascending order. A cursor key may be returned if more tokens exist.",
                 "parameters": [
+                    {
+                        "$ref": "#/components/headers/X-Dct-Node"
+                    },
                     {
                         "name": "minimumKey",
                         "in": "query",
@@ -101,14 +112,84 @@
                         "schema": {
                             "$ref": "#/components/schemas/Hash160"
                         }
+                    },
+                    {
+                        "name": "tokenKeys",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/Hash160List"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "headers": {
-                            "Node": {
-                                "$ref": "#/components/headers/Node"
+                            "Transfer-Encoding" : {
+                                "required": true,
+                                "schema" : {
+                                    "enum": ["chunked"]
+                                }
+                            },
+                            "X-Dct-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node"
+                            }
+                        },
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "5XX": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "patchTokens",
+                "summary": "Creates or updates tokens.",
+                "description": "The recipient will create new tokens if not found and merge if they are. The recipient will return the updated tokens as a chunked stream.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/headers/X-Dct-Node"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/octet-stream": {
+                            "schema": {
+                                "type": "string",
+                                "format": "binary"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Transfer-Encoding" : {
+                                "required": true,
+                                "schema" : {
+                                    "enum": ["chunked"]
+                                }
+                            },
+                            "X-Dct-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node"
                             }
                         },
                         "content": {
@@ -143,6 +224,9 @@
                 "description": "The recipient will return the token identified by it's tokenKey.",
                 "parameters": [
                     {
+                        "$ref": "#/components/headers/X-Dct-Node"
+                    },
+                    {
                         "name": "tokenKey",
                         "in": "path",
                         "required": true,
@@ -155,8 +239,8 @@
                     "200": {
                         "description": "Success",
                         "headers": {
-                            "Node": {
-                                "$ref": "#/components/headers/Node"
+                            "X-Dct-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node"
                             }
                         },
                         "content": {
@@ -188,6 +272,9 @@
                 "description": "The recipient will create a new token if not found and merge if they do. The recipient will return the updated token.",
                 "parameters": [
                     {
+                        "$ref": "#/components/headers/X-Dct-Node"
+                    },
+                    {
                         "name": "tokenKey",
                         "in": "path",
                         "required": true,
@@ -211,8 +298,8 @@
                     "200": {
                         "description": "Success",
                         "headers": {
-                            "Node": {
-                                "$ref": "#/components/headers/Node"
+                            "X-Dct-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node"
                             }
                         },
                         "content": {
@@ -242,7 +329,7 @@
     },
     "components": {
         "headers": {
-            "Node": {
+            "X-Dct-Node": {
                 "description": "An optional field containing information on the node requesting/responding. Nodes will use this header to discover nodes on the network. Encoded as base64url.",
                 "required": false,
                 "schema": {
@@ -255,8 +342,8 @@
             "BadRequest": {
                 "description": "Bad request.",
                 "headers": {
-                    "Node": {
-                        "$ref": "#/components/headers/Node"
+                    "X-Dct-Node": {
+                        "$ref": "#/components/headers/X-Dct-Node"
                     }
                 },
                 "content": {
@@ -270,8 +357,8 @@
             "Unauthorized": {
                 "description": "Unauthorized.",
                 "headers": {
-                    "Node": {
-                        "$ref": "#/components/headers/Node"
+                    "X-Dct-Node": {
+                        "$ref": "#/components/headers/X-Dct-Node"
                     }
                 },
                 "content": {
@@ -285,8 +372,8 @@
             "NotFound": {
                 "description": "The specified resource was not found.",
                 "headers": {
-                    "Node": {
-                        "$ref": "#/components/headers/Node"
+                    "X-Dct-Node": {
+                        "$ref": "#/components/headers/X-Dct-Node"
                     }
                 },
                 "content": {
@@ -300,8 +387,8 @@
             "InternalError": {
                 "description": "Internal server error.",
                 "headers": {
-                    "Node": {
-                        "$ref": "#/components/headers/Node"
+                    "X-Dct-Node": {
+                        "$ref": "#/components/headers/X-Dct-Node"
                     }
                 },
                 "content": {
@@ -335,6 +422,12 @@
                 "pattern": "^[A-Za-z0-9_-]+$",
                 "minLength": 27,
                 "maxLength": 27
+            },
+            "Hash160List": {
+                "description": "Hash160s as a comma seperated list.",
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-,]+$",
+                "minLength": 27
             }
         }
     }
