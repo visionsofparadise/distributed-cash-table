@@ -107,13 +107,6 @@
                         }
                     },
                     {
-                        "name": "cursorKey",
-                        "in": "query",
-                        "schema": {
-                            "$ref": "#/components/schemas/Hash160"
-                        }
-                    },
-                    {
                         "name": "tokenKeys",
                         "in": "query",
                         "schema": {
