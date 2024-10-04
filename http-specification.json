@@ -118,12 +118,6 @@
                     "200": {
                         "description": "Success",
                         "headers": {
-                            "Transfer-Encoding" : {
-                                "required": true,
-                                "schema" : {
-                                    "enum": ["chunked"]
-                                }
-                            },
                             "X-Dct-Node": {
                                 "$ref": "#/components/headers/X-Dct-Node"
                             }
@@ -175,12 +169,6 @@
                     "200": {
                         "description": "Success",
                         "headers": {
-                            "Transfer-Encoding" : {
-                                "required": true,
-                                "schema" : {
-                                    "enum": ["chunked"]
-                                }
-                            },
                             "X-Dct-Node": {
                                 "$ref": "#/components/headers/X-Dct-Node"
                             }
