@@ -87,7 +87,7 @@
             "get": {
                 "operationId": "listTokens",
                 "summary": "Lists the recipient nodes tokens in ascending order. A cursor key may be returned if more tokens exist.",
-                "description": "The recipient will return a list of tokens as a chunked stream in ascending order. A cursor key may be returned if more tokens exist.",
+                "description": "The recipient will return a list of tokens. A cursor key may be returned if more tokens exist.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node"
@@ -148,7 +148,7 @@
             "patch": {
                 "operationId": "patchTokens",
                 "summary": "Creates or updates tokens.",
-                "description": "The recipient will create new tokens if not found and merge if they are. The recipient will return the updated tokens as a chunked stream.",
+                "description": "The recipient will create new tokens if not found and merge if they are. The recipient will return the successful updates.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node"
