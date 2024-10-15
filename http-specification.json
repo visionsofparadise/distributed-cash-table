@@ -14,15 +14,15 @@
                 "description": "Returns no content. This endpoint is used for pings and healthchecks.",
                 "parameters": [
                     {
-                        "$ref": "#/components/headers/X-Dct-Node"
+                        "$ref": "#/components/headers/X-Dct-Node-Node"
                     }
                 ],
                 "responses": {
                     "204": {
                         "description": "Success",
                         "headers": {
-                            "X-Dct-Node": {
-                                "$ref": "#/components/headers/X-Dct-Node"
+                            "X-Dct-Node-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node-Node"
                             }
                         }
                     },
@@ -43,7 +43,7 @@
                 "description": "The recipient node will return the closest nodes it has stored, or closest to the queried nodeKey. Clients should recursively use this method to find a target node. It is up to clients to measure nodeKey distances to make progress towards a target node.",
                 "parameters": [
                     {
-                        "$ref": "#/components/headers/X-Dct-Node"
+                        "$ref": "#/components/headers/X-Dct-Node-Node"
                     },
                     {
                         "name": "nodeKey",
@@ -57,8 +57,8 @@
                     "200": {
                         "description": "Success",
                         "headers": {
-                            "X-Dct-Node": {
-                                "$ref": "#/components/headers/X-Dct-Node"
+                            "X-Dct-Node-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node-Node"
                             }
                         },
                         "content": {
@@ -90,7 +90,7 @@
                 "description": "The recipient will return a list of tokens. A cursor key may be returned if more tokens exist.",
                 "parameters": [
                     {
-                        "$ref": "#/components/headers/X-Dct-Node"
+                        "$ref": "#/components/headers/X-Dct-Node-Node"
                     },
                     {
                         "name": "minimumKey",
@@ -125,59 +125,8 @@
                     "200": {
                         "description": "Success",
                         "headers": {
-                            "X-Dct-Node": {
-                                "$ref": "#/components/headers/X-Dct-Node"
-                            }
-                        },
-                        "content": {
-                            "application/octet-stream": {
-                                "schema": {
-                                    "type": "string",
-                                    "format": "binary"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/NotFound"
-                    },
-                    "5XX": {
-                        "$ref": "#/components/responses/InternalError"
-                    }
-                }
-            },
-            "patch": {
-                "operationId": "patchTokens",
-                "summary": "Creates or updates tokens.",
-                "description": "The recipient will create new tokens if not found and merge if they are. The recipient will return the successful updates.",
-                "parameters": [
-                    {
-                        "$ref": "#/components/headers/X-Dct-Node"
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/octet-stream": {
-                            "schema": {
-                                "type": "string",
-                                "format": "binary"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "headers": {
-                            "X-Dct-Node": {
-                                "$ref": "#/components/headers/X-Dct-Node"
+                            "X-Dct-Node-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node-Node"
                             }
                         },
                         "content": {
@@ -212,7 +161,7 @@
                 "description": "The recipient will return the token identified by it's tokenKey.",
                 "parameters": [
                     {
-                        "$ref": "#/components/headers/X-Dct-Node"
+                        "$ref": "#/components/headers/X-Dct-Node-Node"
                     },
                     {
                         "name": "tokenKey",
@@ -227,8 +176,8 @@
                     "200": {
                         "description": "Success",
                         "headers": {
-                            "X-Dct-Node": {
-                                "$ref": "#/components/headers/X-Dct-Node"
+                            "X-Dct-Node-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node-Node"
                             }
                         },
                         "content": {
@@ -260,7 +209,7 @@
                 "description": "The recipient will create a new token if not found and merge if they do. The recipient will return the updated token.",
                 "parameters": [
                     {
-                        "$ref": "#/components/headers/X-Dct-Node"
+                        "$ref": "#/components/headers/X-Dct-Node-Node"
                     },
                     {
                         "name": "tokenKey",
@@ -286,8 +235,8 @@
                     "200": {
                         "description": "Success",
                         "headers": {
-                            "X-Dct-Node": {
-                                "$ref": "#/components/headers/X-Dct-Node"
+                            "X-Dct-Node-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node-Node"
                             }
                         },
                         "content": {
@@ -317,7 +266,7 @@
     },
     "components": {
         "headers": {
-            "X-Dct-Node": {
+            "X-Dct-Node-Node": {
                 "description": "An optional field containing information on the node requesting/responding. Nodes will use this header to discover nodes on the network. Encoded as base64url.",
                 "required": false,
                 "schema": {
@@ -330,8 +279,8 @@
             "BadRequest": {
                 "description": "Bad request.",
                 "headers": {
-                    "X-Dct-Node": {
-                        "$ref": "#/components/headers/X-Dct-Node"
+                    "X-Dct-Node-Node": {
+                        "$ref": "#/components/headers/X-Dct-Node-Node"
                     }
                 },
                 "content": {
@@ -345,8 +294,8 @@
             "Unauthorized": {
                 "description": "Unauthorized.",
                 "headers": {
-                    "X-Dct-Node": {
-                        "$ref": "#/components/headers/X-Dct-Node"
+                    "X-Dct-Node-Node": {
+                        "$ref": "#/components/headers/X-Dct-Node-Node"
                     }
                 },
                 "content": {
@@ -360,8 +309,8 @@
             "NotFound": {
                 "description": "The specified resource was not found.",
                 "headers": {
-                    "X-Dct-Node": {
-                        "$ref": "#/components/headers/X-Dct-Node"
+                    "X-Dct-Node-Node": {
+                        "$ref": "#/components/headers/X-Dct-Node-Node"
                     }
                 },
                 "content": {
@@ -375,8 +324,8 @@
             "InternalError": {
                 "description": "Internal server error.",
                 "headers": {
-                    "X-Dct-Node": {
-                        "$ref": "#/components/headers/X-Dct-Node"
+                    "X-Dct-Node-Node": {
+                        "$ref": "#/components/headers/X-Dct-Node-Node"
                     }
                 },
                 "content": {
