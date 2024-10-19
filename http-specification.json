@@ -86,8 +86,8 @@
             "description": "Resource for handling a tokens",
             "get": {
                 "operationId": "listTokens",
-                "summary": "Lists the recipient nodes tokens in ascending order. A cursor key may be returned if more tokens exist.",
-                "description": "The recipient will return a list of tokens. A cursor key may be returned if more tokens exist.",
+                "summary": "Returns a stream of the recipient nodes tokens in ascending order.",
+                "description": "The recipient will return a stream of tokens.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node-Node"
@@ -112,19 +112,17 @@
                         "schema": {
                             "$ref": "#/components/schemas/Hash160"
                         }
-                    },
-                    {
-                        "name": "tokenKeys",
-                        "in": "query",
-                        "schema": {
-                            "$ref": "#/components/schemas/Hash160List"
-                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "headers": {
+                            "Transfer-Encoding" : {
+                                "schema" : {
+                                    "enum": ["chunked"]
+                                }
+                            },
                             "X-Dct-Node-Node": {
                                 "$ref": "#/components/headers/X-Dct-Node-Node"
                             }
