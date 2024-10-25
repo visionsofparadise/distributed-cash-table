@@ -86,8 +86,8 @@
             "description": "Resource for handling a tokens",
             "get": {
                 "operationId": "listTokens",
-                "summary": "Returns a stream of the recipient nodes tokens in ascending order.",
-                "description": "The recipient will return a stream of tokens.",
+                "summary": "Returns a list of the recipient nodes tokens in ascending order. A cursor key may be returned if more tokens are remaining.",
+                "description": "The recipient will return a list of tokens. A cursor key may be returned if more tokens are remaining.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node-Node"
@@ -96,21 +96,21 @@
                         "name": "minimumKey",
                         "in": "query",
                         "schema": {
-                            "$ref": "#/components/schemas/Hash160"
+                            "$ref": "#/components/schemas/Hash48"
                         }
                     },
                     {
                         "name": "maximumKey",
                         "in": "query",
                         "schema": {
-                            "$ref": "#/components/schemas/Hash160"
+                            "$ref": "#/components/schemas/Hash48"
                         }
                     },
                     {
                         "name": "cursorKey",
                         "in": "query",
                         "schema": {
-                            "$ref": "#/components/schemas/Hash160"
+                            "$ref": "#/components/schemas/Hash48"
                         }
                     }
                 ],
@@ -118,11 +118,6 @@
                     "200": {
                         "description": "Success",
                         "headers": {
-                            "Transfer-Encoding" : {
-                                "schema" : {
-                                    "enum": ["chunked"]
-                                }
-                            },
                             "X-Dct-Node-Node": {
                                 "$ref": "#/components/headers/X-Dct-Node-Node"
                             }
@@ -166,7 +161,7 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "$ref": "#/components/schemas/Hash160"
+                            "$ref": "#/components/schemas/Hash48"
                         }
                     }
                 ],
@@ -214,7 +209,7 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "$ref": "#/components/schemas/Hash160"
+                            "$ref": "#/components/schemas/Hash48"
                         }
                     }
                 ],
@@ -351,18 +346,19 @@
                     "message"
                 ]
             },
+            "Hash48": {
+                "description": "Represents a 20 byte ripemd(sha256(value)) hash abbreviated to 6 bytes. Encoded as base64url.",
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "minLength": 8,
+                "maxLength": 8
+            },
             "Hash160": {
                 "description": "Represents a 20 byte ripemd(sha256(value)) hash. Encoded as base64url.",
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
                 "minLength": 27,
                 "maxLength": 27
-            },
-            "Hash160List": {
-                "description": "Hash160s as a comma seperated list.",
-                "type": "string",
-                "pattern": "^[A-Za-z0-9_-,]+$",
-                "minLength": 27
             }
         }
     }
