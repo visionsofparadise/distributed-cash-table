@@ -86,8 +86,8 @@
             "description": "Resource for handling a tokens",
             "get": {
                 "operationId": "listTokens",
-                "summary": "Returns a list of the recipient nodes tokens in ascending order. A cursor key may be returned if more tokens are remaining.",
-                "description": "The recipient will return a list of tokens. A cursor key may be returned if more tokens are remaining.",
+                "summary": "Returns a stream of the recipient nodes tokens in ascending order.",
+                "description": "The recipient will return a stream of tokens.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node-Node"
@@ -118,6 +118,11 @@
                     "200": {
                         "description": "Success",
                         "headers": {
+                            "Transfer-Encoding" : {
+                                "schema" : {
+                                    "enum": ["chunked"]
+                                }
+                            },
                             "X-Dct-Node-Node": {
                                 "$ref": "#/components/headers/X-Dct-Node-Node"
                             }
