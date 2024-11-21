@@ -39,17 +39,18 @@
             "description": "Resource for handling nodes in the recipients routing table.",
             "get": {
                 "operationId": "listNodes",
-                "summary": "Lists the closest nodes to the recipient or to the queried nodeKey.",
-                "description": "The recipient node will return the closest nodes it has stored, or closest to the queried nodeKey. Clients should recursively use this method to find a target node. It is up to clients to measure nodeKey distances to make progress towards a target node.",
+                "summary": "Lists the closest nodes to the recipient or to the queried key.",
+                "description": "The recipient node will return the closest nodes it has stored, or closest to the queried key. Clients should recursively use this method to find a target node. It is up to clients to measure key distances to make progress towards a target node.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node-Node"
                     },
                     {
-                        "name": "nodeKey",
+                        "name": "key",
                         "in": "query",
                         "schema": {
-                            "$ref": "#/components/schemas/Hash160"
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9_-]+$"
                         }
                     }
                 ],
@@ -96,21 +97,21 @@
                         "name": "minimumKey",
                         "in": "query",
                         "schema": {
-                            "$ref": "#/components/schemas/Hash48"
+                            "$ref": "#/components/schemas/TokenKey"
                         }
                     },
                     {
                         "name": "maximumKey",
                         "in": "query",
                         "schema": {
-                            "$ref": "#/components/schemas/Hash48"
+                            "$ref": "#/components/schemas/TokenKey"
                         }
                     },
                     {
                         "name": "cursorKey",
                         "in": "query",
                         "schema": {
-                            "$ref": "#/components/schemas/Hash48"
+                            "$ref": "#/components/schemas/TokenKey"
                         }
                     }
                 ],
@@ -166,7 +167,7 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "$ref": "#/components/schemas/Hash48"
+                            "$ref": "#/components/schemas/TokenKey"
                         }
                     }
                 ],
@@ -214,7 +215,7 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "$ref": "#/components/schemas/Hash48"
+                            "$ref": "#/components/schemas/TokenKey"
                         }
                     }
                 ],
@@ -351,19 +352,19 @@
                     "message"
                 ]
             },
-            "Hash48": {
-                "description": "Represents a 20 byte ripemd(sha256(value)) hash abbreviated to 6 bytes. Encoded as base64url.",
-                "type": "string",
-                "pattern": "^[A-Za-z0-9_-]+$",
-                "minLength": 8,
-                "maxLength": 8
-            },
-            "Hash160": {
+            "Hash": {
                 "description": "Represents a 20 byte ripemd(sha256(value)) hash. Encoded as base64url.",
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
                 "minLength": 27,
                 "maxLength": 27
+            },
+            "TokenKey": {
+                "description": "Represents a 20 byte ripemd(sha256(value)) hash abbreviated to 6 bytes. Encoded as base64url.",
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "minLength": 8,
+                "maxLength": 8
             }
         }
     }
