@@ -87,8 +87,8 @@
             "description": "Resource for handling a tokens",
             "get": {
                 "operationId": "listTokens",
-                "summary": "Returns a stream of the recipient nodes tokens in ascending order.",
-                "description": "The recipient will return a stream of tokens.",
+                "summary": "Returns a stream of the recipient nodes token checksums in ascending order.",
+                "description": "The recipient will return a stream of token checksums.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node-Node"
@@ -169,6 +169,13 @@
                         "schema": {
                             "$ref": "#/components/schemas/TokenKey"
                         }
+                    },
+                    {
+                        "name": "isFullToken",
+                        "in": "query",
+                        "schema": {
+                            "enum": ["true", "false"]
+                        }
                     }
                 ],
                 "responses": {
@@ -205,7 +212,7 @@
             "patch": {
                 "operationId": "patchToken",
                 "summary": "Creates or updates a token.",
-                "description": "The recipient will create a new token if not found and merge if they do. The recipient will return the updated token.",
+                "description": "The recipient will create a new token if not found and merge if they do. The recipient will return the updated token checksum.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node-Node"
