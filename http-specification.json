@@ -58,6 +58,11 @@
                     "200": {
                         "description": "Success",
                         "headers": {
+                            "Transfer-Encoding" : {
+                                "schema" : {
+                                    "enum": ["chunked"]
+                                }
+                            },
                             "X-Dct-Node-Node": {
                                 "$ref": "#/components/headers/X-Dct-Node-Node"
                             }
@@ -87,8 +92,8 @@
             "description": "Resource for handling a tokens",
             "get": {
                 "operationId": "listTokens",
-                "summary": "Returns a stream of the recipient nodes token checksums in ascending order.",
-                "description": "The recipient will return a stream of token checksums.",
+                "summary": "Returns a stream of the recipient nodes token checksums or token entries in ascending order.",
+                "description": "The recipient will return a stream of token checksums or token entries.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node-Node"
@@ -112,6 +117,24 @@
                         "in": "query",
                         "schema": {
                             "$ref": "#/components/schemas/TokenKey"
+                        }
+                    },
+                    {
+                        "name": "tokenKeys",
+                        "in": "query",
+                        "schema": {
+                            "description": "A list of comma separated token keys. Allows a maximum of 128 token keys.",
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9_-,]+$",
+                            "minLength": 8,
+                            "maxLength": 1151
+                        }
+                    },
+                    {
+                        "name": "isEntries",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/IsEntries"
                         }
                     }
                 ],
@@ -150,79 +173,20 @@
                         "$ref": "#/components/responses/InternalError"
                     }
                 }
-            }
-        },
-        "/v1/tokens/{tokenKey}": {
-            "description": "Resource for handling a token identified by it's tokenKey",
-            "get": {
-                "operationId": "getToken",
-                "summary": "Gets the requested token.",
-                "description": "The recipient will return the token identified by it's tokenKey.",
-                "parameters": [
-                    {
-                        "$ref": "#/components/headers/X-Dct-Node-Node"
-                    },
-                    {
-                        "name": "tokenKey",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/TokenKey"
-                        }
-                    },
-                    {
-                        "name": "isFullToken",
-                        "in": "query",
-                        "schema": {
-                            "enum": ["true", "false"]
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "headers": {
-                            "X-Dct-Node-Node": {
-                                "$ref": "#/components/headers/X-Dct-Node-Node"
-                            }
-                        },
-                        "content": {
-                            "application/octet-stream": {
-                                "schema": {
-                                    "type": "string",
-                                    "format": "binary"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/NotFound"
-                    },
-                    "5XX": {
-                        "$ref": "#/components/responses/InternalError"
-                    }
-                }
             },
             "patch": {
-                "operationId": "patchToken",
-                "summary": "Creates or updates a token.",
-                "description": "The recipient will create a new token if not found and merge if they do. The recipient will return the updated token checksum.",
+                "operationId": "patchTokens",
+                "summary": "Creates or updates tokens.",
+                "description": "The recipient will create a new token if not found and merge if the token exists. The recipient will a stream of tokenKey and token checksum or token entries.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node-Node"
                     },
                     {
-                        "name": "tokenKey",
-                        "in": "path",
-                        "required": true,
+                        "name": "isEntries",
+                        "in": "query",
                         "schema": {
-                            "$ref": "#/components/schemas/TokenKey"
+                            "$ref": "#/components/schemas/IsEntries"
                         }
                     }
                 ],
@@ -232,7 +196,8 @@
                         "application/octet-stream": {
                             "schema": {
                                 "type": "string",
-                                "format": "binary"
+                                "format": "binary",
+                                "maxLength": 1000000
                             }
                         }
                     }
@@ -241,6 +206,11 @@
                     "200": {
                         "description": "Success",
                         "headers": {
+                            "Transfer-Encoding" : {
+                                "schema" : {
+                                    "enum": ["chunked"]
+                                }
+                            },
                             "X-Dct-Node-Node": {
                                 "$ref": "#/components/headers/X-Dct-Node-Node"
                             }
@@ -364,7 +334,11 @@
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
                 "minLength": 27,
-                "maxLength": 27
+                "maxLength": 28
+            },
+            "IsEntries": {
+                "description": "Boolean representing whether this resource should return tokens as checksums or a full list of entries.",
+                "enum": ["true", "false"]
             },
             "TokenKey": {
                 "description": "Represents a 20 byte ripemd(sha256(value)) hash abbreviated to 6 bytes. Encoded as base64url.",
