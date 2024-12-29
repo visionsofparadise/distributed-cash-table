@@ -89,11 +89,11 @@
             }
         },
         "/v1/tokens": {
-            "description": "Resource for handling a tokens",
+            "description": "Resource for handling tokens",
             "get": {
                 "operationId": "listTokens",
-                "summary": "Returns a stream of the recipient nodes token checksums or token entries in ascending order.",
-                "description": "The recipient will return a stream of token checksums or token entries.",
+                "summary": "Returns a stream of the recipient nodes tokens in ascending order.",
+                "description": "The recipient will return a stream of tokens.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node-Node"
@@ -113,13 +113,6 @@
                         }
                     },
                     {
-                        "name": "cursorKey",
-                        "in": "query",
-                        "schema": {
-                            "$ref": "#/components/schemas/TokenKey"
-                        }
-                    },
-                    {
                         "name": "tokenKeys",
                         "in": "query",
                         "schema": {
@@ -128,13 +121,6 @@
                             "pattern": "^[A-Za-z0-9_-,]+$",
                             "minLength": 8,
                             "maxLength": 1151
-                        }
-                    },
-                    {
-                        "name": "isEntries",
-                        "in": "query",
-                        "schema": {
-                            "$ref": "#/components/schemas/IsEntries"
                         }
                     }
                 ],
@@ -177,17 +163,140 @@
             "patch": {
                 "operationId": "patchTokens",
                 "summary": "Creates or updates tokens.",
-                "description": "The recipient will create a new token if not found and merge if the token exists. The recipient will a stream of tokenKey and token checksum or token entries.",
+                "description": "The recipient will create a new token if not found and merge if the token exists. The recipient will return a stream of token key and token pairs.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/headers/X-Dct-Node-Node"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/octet-stream": {
+                            "schema": {
+                                "type": "string",
+                                "format": "binary",
+                                "maxLength": 1000000
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Transfer-Encoding" : {
+                                "schema" : {
+                                    "enum": ["chunked"]
+                                }
+                            },
+                            "X-Dct-Node-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node-Node"
+                            }
+                        },
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "5XX": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                }
+            }
+        },
+        "/v1/token-consensuses": {
+            "description": "Resource for handling a token consensuses",
+            "get": {
+                "operationId": "listTokenConsensuses",
+                "summary": "Returns a stream of the recipient nodes token consensuses.",
+                "description": "The recipient will return a stream of token consensuses.",
                 "parameters": [
                     {
                         "$ref": "#/components/headers/X-Dct-Node-Node"
                     },
                     {
-                        "name": "isEntries",
+                        "name": "minimumKey",
                         "in": "query",
                         "schema": {
-                            "$ref": "#/components/schemas/IsEntries"
+                            "$ref": "#/components/schemas/TokenKey"
                         }
+                    },
+                    {
+                        "name": "maximumKey",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/TokenKey"
+                        }
+                    },
+                    {
+                        "name": "tokenKeys",
+                        "in": "query",
+                        "schema": {
+                            "description": "A list of comma separated token keys. Allows a maximum of 128 token keys.",
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9_-,]+$",
+                            "minLength": 8,
+                            "maxLength": 1151
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Transfer-Encoding" : {
+                                "schema" : {
+                                    "enum": ["chunked"]
+                                }
+                            },
+                            "X-Dct-Node-Node": {
+                                "$ref": "#/components/headers/X-Dct-Node-Node"
+                            }
+                        },
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "5XX": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "patchTokenConsensuses",
+                "summary": "Creates or updates tokens.",
+                "description": "The recipient will create a new token if not found and merge if the token exists. The recipient will a stream of tokenKey and token consensus pairs.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/headers/X-Dct-Node-Node"
                     }
                 ],
                 "requestBody": {
@@ -330,18 +439,14 @@
                 ]
             },
             "Hash": {
-                "description": "Represents a 20 byte ripemd(sha256(value)) hash. Encoded as base64url.",
+                "description": "Represents a 32 byte sha256(value) hash. Encoded as base64url.",
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
                 "minLength": 27,
                 "maxLength": 28
             },
-            "IsEntries": {
-                "description": "Boolean representing whether this resource should return tokens as checksums or a full list of entries.",
-                "enum": ["true", "false"]
-            },
             "TokenKey": {
-                "description": "Represents a 20 byte ripemd(sha256(value)) hash abbreviated to 6 bytes. Encoded as base64url.",
+                "description": "Represents a 32 byte sha256(value) hash abbreviated to 6 bytes. Encoded as base64url.",
                 "type": "string",
                 "pattern": "^[A-Za-z0-9_-]+$",
                 "minLength": 8,
